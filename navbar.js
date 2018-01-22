@@ -100,6 +100,9 @@
 		let list = document.createElement("li");
 		let link = document.createElement("a");
 		link.innerText = key;
+		if(key === page) {
+			link.classList.add("active");
+		}
 		list.appendChild(link);
 		if(typeof navbarLayout[key] === "string") {
 			link.href = navbarLayout[key];
