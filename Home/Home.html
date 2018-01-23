@@ -6,18 +6,39 @@
 		<link rel="icon" href="../assets/icon.ico">
 		<link rel="stylesheet" href="../style.css">
 		<script src="https://caasinehc.github.io/ice/src/ice.js"></script>
+		<style>
+			.newLook::after {
+				content: "new look.";
+			}
+			.newLook:hover::after {
+				font-style: italic;
+				content: "same great taste!";
+			}
+		</style>
 	</head>
 	<body>
 		<script>let page = "home";</script>
 		<script src="../navbar.js"></script>
 		<h1>Welcome to Isaac's Arcade!</h1>
-		<!-- START TEMP -->
 		<p>
-			Hello! If you are seeing this page, you are either me (Hello, me!) or someone else.
-			If you <em>aren't</em> me, so sorry for the mess! This site is a work in progress
-			for the new and improved Isaac's Arcade. It's not ready yet, so feel free to visit
-			the <a href="https://www.rebrand.ly/isaac">old site</a> for now. DFTBA!
+			&nbsp;&nbsp;&nbsp;&nbsp;Hello, and welcome to Isaac's Arcade! My name is Isaac Chen, and I am <span id="ageText">the creator of this site</span>.
+			I have a huge passion for computer programming, and decided to make a website with all my games and projects.
+			It turned out pretty cool in my <em>completely unbiased</em> opinion, but storage limitations forced me to switch website hosts.
+			I figured that was as good a time as any to give the site a <span class="newLook"></span> I'm (obviously) not a graphic designer,
+			but I do think this new site looks a *little* better than <a href="../Old site/index.html" class="subtleLink">the old one</a>.
+			I hope you agree :)
 		</p>
-		<!-- END TEMP -->
+		<p>
+			&nbsp;&nbsp;&nbsp;&nbsp;You can use the navigation bar above to check out what I've done, or view the source code
+			<a href="https://github.com/caasinehc/Isaacs-Arcade/" target="_blank" class="subtleLink">here</a>.
+			If you found a bug/issue with the site, you can file a bug report
+			<a href="https://github.com/caasinehc/Isaacs-Arcade/issues/new?template=bug_template.md" target="_blank" class="subtleLink">here</a>.
+			If you have an idea for a new feature or improvement, share it with me by clicking
+			<a href="https://github.com/caasinehc/Isaacs-Arcade/issues/new?template=feature_template.md" target="_blank" class="subtleLink">here</a>!
+			For the more technically inclined of you, if you found a bug or have an idea, feel free to fork the repository, make some changes,
+			and submit a pull request. If you aren't sure how to do that, read
+			<a href="https://guides.github.com/activities/forking/" target="_blank" class="subtleLink">this helpful article from GitHub.</a>
+		</p>
+		<script src="age.js"></script>
 	</body>
 </html>
