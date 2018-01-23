@@ -1,0 +1,35 @@
+/*
+ *
+ *	Snakes!
+ *	V 1.3
+ *	CSS page 1 of 1
+ *	Coded by Isaac Chen
+ *	5/9/16 - 5/14/16
+ *
+ */
+
+button {
+  padding: 0px;
+	border: none;
+	height: 32px;
+	width: 96px;
+	font-weight: bold;
+	margin-right: 4px;
+	margin-left: 4px;
+	margin-bottom: 1px;
+}
+button:hover {
+	margin-bottom: 0px;
+	border-right: 1px solid;
+	border-bottom: 1px solid;
+}
+input {
+	width: 320px;
+}
+h1#score {
+	float: left;
+	width: 240px;
+}
+h1#difficultyText {
+	float: left;
+}

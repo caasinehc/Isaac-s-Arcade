@@ -1,0 +1,42 @@
+<!--
+
+	Bonsai Simulator
+	V 2.5.7
+	HTML page 1 of 1
+	Coded by Isaac Chen
+	10/27/16 - 11/24/16
+
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bonsai Simulator</title>
+    <link rel="shortcut icon" href="Assets/Images/Bonsai%20Simulator%20Icon.ico">
+    <link rel="stylesheet" href="Bonsai%20Simulator.css">
+    <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+	</head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("randomButton").className = "active";
+      document.getElementById("bonsaiSimulatorButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <div class="gameContent">
+		  <canvas id="myCanvas" height="800" width="800">Your browser does not support HTML5, please consider upgrading to another browser (like chrome).</canvas><br />
+		  <button onclick="grow();" id="growButton">Grow</button>
+		  <button onclick="useSeed();" id="useSeedButton">Use Seed</button>
+		  <button onclick="fullGrow();" id="fullGrowButton">Auto-Grow</button>
+      <span style="color:#848484; font-size:16px">Try seeds: "stats", "graph", "dion", "mom", "kerri", and "alex"</span><br />
+		  <br />
+		  <input type="text" id="seedInput" value="#">
+    </div>
+    <img src="Assets/Images/Bonsai%20Simulator%20Background.png" alt="" height="0" width="0" id="backgroundImage" />
+    <img src="Assets/Images/Bonsai%20Simulator%20Flower.png" alt="" height="0" width="0" id="flowerImage" />
+    <img src="Assets/Images/pumpkin.png" alt="" height="0" width="0" id="pumpkinImage" />
+    <script src="Bonsai%20Simulator.js"></script>
+	</body>
+</html>

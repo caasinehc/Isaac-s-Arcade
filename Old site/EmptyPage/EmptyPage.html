@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <script>
+      var temp = setInterval(function() {
+        document.body.innerHTML = "";
+        document.head.innerHTML = "";
+        if(document.body.innerHTML == "" && document.head.innerHTML == "") {
+          setTimeout(function() {clearInterval(temp);}, 1000);
+        }
+      }, 1);
+    </script>
+  </body>
+</html>

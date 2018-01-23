@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Circle Generator</title>
+    <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("randomButton").className = "active";
+      document.getElementById("circleButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <div class="gameContent">
+      <h1>Circle Generator</h1>
+      <canvas id="myCanvas" width="808" height="808" style="border:2px solid"></canvas><br/>
+      <button onclick="draw();">draw</button>
+    </div>
+    <script src="Circle.js"></script>
+  </body>
+</html>

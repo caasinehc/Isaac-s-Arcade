@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Skeet Hero</title>
+    <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("gamesButton").className = "active";
+      document.getElementById("skeetHeroButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <div class="gameContent">
+      <canvas id="myCanvas" width="700" height="500" style="border: 3px solid"></canvas>
+      <h1 id="scoreDisplay" style="user-select: none;">Score: 0</h1>
+      <p>Highscore: 250 by Joshua Chen</p>
+    </div>
+    <img src="Assets/Images/pumpkin.png" height="0" width="0" id="pumpkinImage" alt="" />
+    <img src="Assets/Images/Skeet%20Hero%20Background.png" height="0" width="0" id="backgroundImage" alt="" />
+    <script src="Skeet%20Hero.js"></script>
+  </body>
+</html>

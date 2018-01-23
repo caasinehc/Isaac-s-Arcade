@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SmootherWall Bookmarklet Generator</title>
+    <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+    <link rel="stylesheet" href="SmootherWall.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("randomButton").className = "active";
+      document.getElementById("seeecretButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <h1>SmootherWall Bookmarklet Generator</h1>
+    <label>Username: </label><input type="text" value="" id="user"><br />
+    <label>Password: </label><input type="password" value="" id="pass"><br />
+    <br />
+    <button onclick="gen();">Generate!</button>
+    <br />
+    <br />
+    <a href="" id="link">SmootherWall 2.2.5</a><br />
+    <p id="myP">Drag the link above into your bookmark bar!</p>
+    <script src="SmootherWall.js"></script>
+  </body>
+</html>

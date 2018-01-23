@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas Pen</title>
+  <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("randomButton").className = "active";
+      document.getElementById("canvasPenButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <div class="gameContent">
+      <canvas height="600" width="600" id="myCanvas" style="border:3px solid"></canvas><br />
+      <label>Color: <input type="color" value="#000000" id="color" /></label>
+      <label>Size: <input type="number" value="4" id="size" min="1" /></label>
+      <button onclick="clearCanvas();">Clear</button>
+      <button onclick="download();">View as png</button><br />
+    </div>
+    <script src="Canvas%20Pen.js"></script>
+  </body>
+</html>

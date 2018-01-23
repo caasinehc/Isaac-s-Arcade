@@ -1,0 +1,77 @@
+<!--
+
+	Canvas Test
+	V 1.1.2
+	HTML page 1 of 1
+	Coded by Isaac Chen
+	10/27/16 - 10/27/16
+
+-->
+
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+    <title>Particles</title>
+    <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("randomButton").className = "active";
+      document.getElementById("particlesButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <div class="gameContent">
+      <canvas id="myCanvas" width="500" height="500" style="border:3px solid"></canvas><br />
+      <button onclick="showSettings();" id="settingsButton">Show Settings</button>
+      <button onclick="resetPos();">Reset Position</button><br />
+      <div style="border: 2px solid; margin-top: 4px">
+        <label>Presets:</label>
+        <button onclick="usePreset(presets.fire)">Fire</button>
+        <button onclick="usePreset(presets.bee)">Bumble Bee</button>
+        <button onclick="usePreset(presets.water)">Water</button>
+        <button onclick="usePreset(presets.pixie)">Pixie</button>
+        <button onclick="usePreset(presets.dirt)">Dirt</button>
+        <button onclick="usePreset(presets.steam)">Steam</button>
+        <button onclick="usePreset(presets.bouncy)">Bouncy Ball</button>
+        <button onclick="usePreset(presets.ice)">Ice</button><!-- Special thanks to Kate Chen for this idea! -->
+        <button onclick="usePreset(presets.ethereal)">Ethereal Orbs</button>
+        <button onclick="usePreset(presets.gas)">Poison Gas</button>
+        <button onclick="usePreset(presets.bubbles)">Bubbles</button>
+        <button onclick="usePreset(presets.randomPreset)">Random Preset</button>
+        <button onclick="usePreset(presets.random)">Random</button><br />
+      </div>
+      <div id="settingsDiv">
+        <label>Optimize for: <button onclick="toggleOptimize();" id="optimizeButton">Graphics</button></label><br />
+        <label>Gravity: <input type="checkbox" checked id="gravity" /></label><br />
+        <label>Weight: <input type="number" value="0.15" step="any" id="weight" /></label><br />
+        <label>Count: <input type="number" value="1" step="any" id="count" /></label><br />
+        <label>Lifetime: <input type="number" value="20" step="any" id="minLife" min="0" /></label>
+        <label> to <input type="number" value="200" step="any" id="maxLife" min="0" /></label><br />
+        <label>Initial X velocity: <input type="number" value="-2.5" step="any" id="minInitVX" /></label>
+        <label> to <input type="number" value="2.5" step="any" id="maxInitVX" /></label><br />
+        <label>Initial Y velocity: <input type="number" value="-2.5" step="any" id="minInitVY" /></label>
+        <label> to <input type="number" value="2.5" step="any" id="maxInitVY" /></label><br />
+        <label>X velocity: <input type="number" value="-2.5" step="any" id="minVX" /></label>
+        <label> to <input type="number" value="2.5" step="any" id="maxVX" /></label><br />
+        <label>Y velocity: <input type="number" value="-2.5" step="any" id="minVY" /></label>
+        <label> to <input type="number" value="2.5" step="any" id="maxVY" /></label><br />
+        <label>Turn chance: <input type="number" value="0" step="any" id="turnChance" min="0" max="100" />%</label><br />
+        <label>Color: <input type="text" value="random" id="color" /></label><br />
+        <label>Shape:</label><br />
+        <label><input type="radio" name="shape" value="circle" checked id="circle" /> Circle</label><br />
+        <label><input type="radio" name="shape" value="square" id="square" /> Square</label><br />
+        <label>Size: <input type="number" value="8" step="any" id="size" min="0" /></label><br />
+        <label>Overlap: <input type="checkbox" id="overlap" checked /></label><br />
+        <label>Trail: <input type="number" value="85" step="any" id="trail" min="0" max="100" /></label><br />
+        <label>Show FPS: <input type="checkbox" checked id="FPS" /></label><br />
+        <label>preset: <input type="text" id="presetInput" size="72" /></label><br />
+        <button onclick="updatePresetInput();" id="getPresetButton">Get Preset</button>
+        <button onclick="usePresetInput();" id="usePresetButton">Use Preset</button>
+      </div>
+    </div>
+    <script src="Particles.js"></script>
+	</body>
+</html>

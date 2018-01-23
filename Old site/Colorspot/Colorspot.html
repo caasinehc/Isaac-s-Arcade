@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Colorspot</title>
+    <link rel="stylesheet" href="Colorspot.css">
+    <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("gamesButton").className = "active";
+      document.getElementById("colorspotButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <div class="gameContent">
+      <canvas id="myCanvas" width="600" height="600" style="border:4px solid"></canvas>
+      <br />
+      <input type="range" id="gameDifficulty" onchange="updateDifficulty();" min="1" max="5" value="3"><br />
+      <h1 style="width: 600px">Score: <span id="pointsText">0</span><span id="lives">Lives: <span id="livesText">3</span></span></h1>
+      <h1>Difficulty: <span id="difficultyText">Normal</span></h1>
+      <p>
+        <strong>Highscores:</strong><br />
+        Piece of cake: 500 Points by Joshua Chen<br />
+        Easy: 500 Points by Joshua Chen<br />
+        Normal: 1001 Points by Joshua Chen<br />
+        Hard: 105 Points by Joshua Chen<br />
+        Expert: 22 Points by Joshua Chen<br />
+      </p>
+    </div>
+    <script src="Colorspot.js"></script>
+  </body>
+</html>

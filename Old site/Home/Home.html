@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Isaac's Arcade</title>
+    <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+    <link rel="stylesheet" href="Home.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("homeButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <div class=textContent id="markEasterEgg">
+      <h1>Welcome to Isaac's Arcade!</h1>
+      <p>
+        My name is Isaac Chen, and I am <span id="ageDisplay">the creator of this site</span>. I have a passion for computer programming, and decided to make a website with all my games/programs. To check them out, use the navigation bar above. If you would like to see the source code, right click anywhere on this page, then click "Inspect" or "Inspect element". <span id="inspectText" onclick="havingTrouble();">Having trouble?</span>
+      </p>
+      <p>
+        Well, what are you waiting for? Get to playing!
+      </p>
+    </div>
+    <script src="Home.js"></script>
+  </body>
+</html>

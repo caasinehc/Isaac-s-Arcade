@@ -1,0 +1,33 @@
+<!--
+
+Stacker
+V 1.0.0
+HTML page 1 of 1
+Coded by Isaac Chen
+12/1/16 - 12/1/16
+
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Stacker</title>
+    <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("gamesButton").className = "active";
+      document.getElementById("stackerButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <div class="gameContent">
+      <canvas height="600" width="450" style="border: 4px solid" id="myCanvas"></canvas><br />
+      <p>Highscore: 635 by Juwan Greene</p>
+    </div>
+    <script src="Stacker.js"></script>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+<!--
+
+	Gostkowski Simulator
+	V 1.2.2
+	HTML page 1 of 1
+	Coded by Isaac Chen
+	10/31/16 - 10/31/16
+
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Gostkowski simulator</title>
+		<meta charset="UTF-8">
+    <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("gamesButton").className = "active";
+      document.getElementById("gostkowskiSimulatorButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <div class="gameContent">
+    <h1>Gostkowski Simulator</h1>
+		  <canvas id="myCanvas" height="400" width="400" style="border: 4px solid">Your browser doesn't support HTML5, please upgrade to something like chrome.</canvas><br />
+		  <button onclick="startGame();" id="startGameButton">Start Game!</button>
+		  <h1 id="pointsDisplay">Points</h1>
+		  <p>Highscore: 3600 Points by Juwan Greene</p>
+    </div>
+    <img src="Assets/Images/Gostkowski%20Simulator%20Background.png" height="0" width="0" id="backgroundImage" alt="">
+		<img src="Assets/Images/football.png" height="0" width="0" id="footballImage" alt="">
+		<script src="Gostkowski%20Simulator.js"></script>
+	</body>
+</html>

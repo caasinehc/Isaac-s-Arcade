@@ -1,15 +1,18 @@
 (function() {
 	let navbarLayout = {
-		home: "../Home/Home.html",
-		games: {
-			game1: "javascript: alert('game1 clicked!');",
-			game2: "javascript: alert('game2 clicked!');",
-			game3: "javascript: alert('game3 clicked!');"
+		"home": "../Home/Home.html",
+		"games": {
+			"game1": "javascript: alert('game1 clicked!');",
+			"game2": "javascript: alert('game2 clicked!');",
+			"game3": "javascript: alert('game3 clicked!');"
 		},
-		random: {
-			random1: "javascript: alert('random1 clicked!');",
-			random2: "javascript: alert('random2 clicked!');",
-			random3: "javascript: alert('random3 clicked!');"
+		"random": {
+			"random1": "javascript: alert('random1 clicked!');",
+			"random2": "javascript: alert('random2 clicked!');",
+			"random3": "javascript: alert('random3 clicked!');"
+		},
+		"old projects": {
+			"Isaac's Arcade (old)": "../Old site/index.html"
 		}
 	};
 	let styles = {

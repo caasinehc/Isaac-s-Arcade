@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bookmarklets</title>
+    <link rel="stylesheet" href="Bookmarklets.css">
+    <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("randomButton").className = "active";
+      document.getElementById("seeecretButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <div class="textContent">
+      <h1>Isaac's Custom Bookmarklets</h1>
+      <p>
+        Warning: These bookmarklets are experimental. Most of these were just thrown together in an afternoon for me (Isaac (the dev)) to mess around with. Please don't expect all of these to work as expected/at all. The only bookmarklet I keep up to date is <a href="../SmootherWall/SmootherWall.html">SmootherWall</a>.
+        <br /><br />
+        That being said, you can get a bookmarklet by dragging it up into your bookmarks bar. When you want to use it, simply click on it as if it were a normal bookmark. Javascript will do the rest :)
+      </p>
+
+      <a class="bookmarklet" href=
+         "javascript:(function(){document.body.appendChild(document.createElement(&quot;script&quot;)).src=&quot;https://jsbin.com/xexukej.js&quot;;})();"
+         >Master Haxor Advice</a>
+
+      <a class="bookmarklet" href=
+         "javascript:var debugletWindow = window.open(&quot;&quot;, &quot;DebugletWindow&quot;, &quot;width=400, height=600, left=200, top=200&quot;);(function() {document.body.appendChild(document.createElement(&quot;script&quot;)).src=&quot;https://output.jsbin.com/yenenos.js&quot;;})();"
+         >Debuglet</a>
+
+      <a class="bookmarklet" href=
+         "javascript: (function() {var script = document.createElement(&quot;script&quot;); script.src = &quot;https://caasinehc.github.io/ice/src/ice.js&quot;; var appendSite = document.head || document.documentElement || document; appendSite.appendChild(script);})();"
+         >Import ice.js</a>
+    </div>
+  </body>
+</html>

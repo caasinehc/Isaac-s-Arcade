@@ -1,0 +1,49 @@
+<!--
+
+	Snakes!
+	V 1.3
+	HTML page 1 of 1
+	Coded by Isaac Chen
+	5/9/16 - 5/14/16
+
+-->
+
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<title>Snakes!</title>
+		<link rel="stylesheet" href="Snakes.css">
+    <link rel="stylesheet" href="../Isaac's%20Arcade.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <ul id="navBar"></ul>
+    <script src="../navbar.js"></script>
+    <script>
+      document.getElementById("gamesButton").className = "active";
+      document.getElementById("snakesButton").className = "active";
+    </script><br />
+    <!-- End of Navbar -->
+    <div class="gameContent">
+      <canvas id="myCanvas" width="320" height="320" style="border:3px solid" onclick="startGame();"></canvas> <!-- Thanks for the idea of clicking, Josh! -->
+		  <br />
+		  <button id="snakeColorButton" onclick="upSnakeColor();" style="background-color:#00FF00">Snake Color</button>
+		  <button id="foodColorButton" onclick="upFoodColor();" style="background-color:#FF8000">Food Color</button>
+		  <button id="startGameButton" onclick="startGame();">Start Game</button>
+		  <br /><br />
+		  <input type="range" id="gameDifficulty" onchange="updateDifficulty();" min="1" max="5" value="1">
+		  <br />
+		  <h1 id="score">Score: 0</h1>
+      <h1 id="difficultyText">Slug</h1><br /><br /><br /><br />
+      <p>
+        <strong>Highscores:</strong> <br />
+        Slug: 78 Points by Joshua Chen <br />
+        Snail: 62 Points by Joshua Chen <br />
+        Snake: 42 Points by Joshua Chen <br />
+        Cobra: 31 Points by Joshua Chen <br />
+        Dragon: 48 Points by Mark Belanger <br />
+      </p>
+    </div>
+		<script src="Snakes.js"></script>
+	</body>
+</html>
