@@ -1,7 +1,7 @@
 <!--
 	Hello! I'm excited to hear you have an idea for a new feature!
 	Please give me as much information about your idea as possible,
-	and I'll try my best to implement your idea.
+	and I'll try my best to implement it.
 -->
 
 # What's your idea?
