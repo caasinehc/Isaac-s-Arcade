@@ -27,11 +27,12 @@ If you are unsure of anything, just leave it blank. I'll try a few things and se
 ## Steps to Reproduce
 
 Please provide detailed steps for reproducing the issue.
-This is important because I can't fix a problem that I can't see
+This is incredibly important to the debugging process, as
+I will need to see and understand the problem before I can fix it.
 
 1. step 1
 2. step 2
-3. you get the pattern...
+3. you get the idea...
 
 ## Additional information
 
