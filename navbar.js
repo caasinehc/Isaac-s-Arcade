@@ -2,7 +2,7 @@
 	let navbarLayout = {
 		"home": "../Home/Home.html",
 		"games": {
-			"game1": "javascript: alert('game1 clicked!');",
+			"Don't Touch Red!": "../Don't Touch Red!/Don't Touch Red!.html",
 			"game2": "javascript: alert('game2 clicked!');",
 			"game3": "javascript: alert('game3 clicked!');"
 		},
@@ -46,7 +46,6 @@
 		// NAVBAR
 		".navbar ul {\n" +
 		"	list-style-type: none;\n" + // no bullets
-		"	margin: 0px;\n" +
 		"	padding: 0px;\n" +
 		"	overflow: hidden;\n" +
 		"	background: " + styles.background + ";\n" +
@@ -119,6 +118,10 @@
 				let link2 = document.createElement("a");
 				link2.href = navbarLayout[key][key2];
 				link2.innerText = key2;
+				if(key2 === page) {
+					list.classList.add("active");
+					link2.classList.add("active");
+				}
 				contentDiv.appendChild(link2);
 			}
 			list.appendChild(contentDiv);
