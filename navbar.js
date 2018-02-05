@@ -1,17 +1,17 @@
 (function() {
 	let navbarLayout = {
-		"home": "../Home/Home.html",
-		"games": {
+		"Home": "../Home/Home.html",
+		"Games": {
 			"Don't Touch Red!": "../Don't Touch Red!/Don't Touch Red!.html",
 			"game2": "javascript: alert('game2 clicked!');",
 			"game3": "javascript: alert('game3 clicked!');"
 		},
-		"random": {
+		"Random": {
 			"random1": "javascript: alert('random1 clicked!');",
 			"random2": "javascript: alert('random2 clicked!');",
 			"random3": "javascript: alert('random3 clicked!');"
 		},
-		"old projects": {
+		"Old Projects": {
 			"Isaac's Arcade (old)": "../Old site/index.html"
 		}
 	};
