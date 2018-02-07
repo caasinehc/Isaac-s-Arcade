@@ -2,9 +2,8 @@ if(typeof ice === "undefined") ice = {modules: []};
 (function() {
 	if(!ice.modules.includes("dom")) ice.modules.push("dom");
 	ice.dom = {};
-	ice.dom.version = "v1.0.11"; // This version of the ice.dom module
+	ice.dom.version = "v1.0.12"; // This version of the ice.dom module
 	console.log("%cice.dom " + ice.dom.version + " imported successfully.", "color: #008000");
-	init();
 
 	/*
 	 *	================ Dom Module ================
@@ -351,11 +350,21 @@ if(typeof ice === "undefined") ice = {modules: []};
 			elem.addEventListener("contextmenu", stop);
 		}
 	}
-	ice.dom.append = function(elem, location = document.body, where = "child") {
+	ice.dom.append = function(elem, location, where = "child") {
+		if(location === undefined) {
+			if(document.body === null) {
+				document.addEventListener("DOMContentLoaded", () => {
+					if(where === "child") location.appendChild(elem);
+					else if (where === "before") location.parentNode.insertBefore(elem, location);
+					else if(where === "after") location.parentNode.insertBefore(elem, location.nextSibling);
+				});
+				return;
+			}
+			else location = document.body;
+		}
 		if(where === "child") location.appendChild(elem);
 		else if (where === "before") location.parentNode.insertBefore(elem, location);
 		else if(where === "after") location.parentNode.insertBefore(elem, location.nextSibling);
-		return elem;
 	}
 	ice.dom.remove = function(elem) {
 		return elem.parentNode.removeChild(elem);
@@ -601,7 +610,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 
 	// Init
 
-	function init() {
+	document.addEventListener("DOMContentLoaded", () => {
 		// Ensure the document has a head (for ice.dom.import)
 		if(document.head === null) {
 			if(document.documentElement === null) {
@@ -613,5 +622,5 @@ if(typeof ice === "undefined") ice = {modules: []};
 		if(document.body === null) {
 			document.documentElement.appendChild(document.createElement("body"));
 		}
-	}
+	});
 })();

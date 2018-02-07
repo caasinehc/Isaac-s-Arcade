@@ -1,6 +1,5 @@
 frameRate(12);
 
-
 let boxSize = 20;
 let cols = width / boxSize;
 let rows = height / boxSize;
@@ -21,11 +20,22 @@ let facing = EAST;
 let cheats = {};
 cheats.invul = false;
 
+let slider = dom.createSlider(1, 5, 1, 3);
+dom.append(slider);
+slider.onchange = (e) => {
+	frameRate(slider.value * 5);
+}
+
 function restart() {
+	slider.style.display = "none";
 	snake = [gridMiddle.clone()];
 	eatFood();
 	haveTurned = false;
 	gameOver = false;
+}
+function endGame() {
+	slider.style.display = "";
+	gameOver = true;
 }
 
 function getNextPos() {
@@ -102,7 +112,7 @@ function tick() {
 		if(snake[0].equals(food)) eatFood();
 		else snake.pop();
 
-		if(!cheats.invul && colliding()) gameOver = true;
+		if(!cheats.invul && colliding()) endGame();
 
 		haveTurned = false;
 	}
