@@ -18,7 +18,7 @@ let {
 	ceil, floor, abs, max, min, round, sign,
 	hypot
 } = Math;
-let TAU = PI * 2;
+const TAU = PI * 2;
 let {
 	randomInt, randomFloat, randomFrom, random,
 	chance, percentChance, coinFlip,
@@ -29,9 +29,8 @@ let {
 } = math;
 
 /* The main framework stuff */
-// For the config
-let RGB = "rgb";
-let HSL = "hsl";
+const RGB = "rgb";
+const HSL = "hsl";
 
 // The scene
 let scene = new graphics.Scene();
@@ -47,8 +46,8 @@ let {
 	sepia, brightness, contrast, blur, saturate,
 	opacity, colorshift, recolor, save, restore
 } = scene;
-let size = new physics.Vector();
-let middle = new physics.Vector();
+let size = new physics.Vector(scene.width, scene.height);
+let middle = new physics.Vector(scene.midWidth, scene.midHeight);
 function resize(w, h) {
 	scene.resize(w, h);
 	({width, height, midWidth, midHeight} = scene);

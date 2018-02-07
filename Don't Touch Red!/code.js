@@ -94,6 +94,8 @@ function tick() {
 	}
 }
 
+setBackground(0);
+
 function render() {
 	background();
 

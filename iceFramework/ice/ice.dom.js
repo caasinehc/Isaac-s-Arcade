@@ -2,7 +2,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 (function() {
 	if(!ice.modules.includes("dom")) ice.modules.push("dom");
 	ice.dom = {};
-	ice.dom.version = "v1.0.8"; // This version of the ice.dom module
+	ice.dom.version = "v1.0.11"; // This version of the ice.dom module
 	console.log("%cice.dom " + ice.dom.version + " imported successfully.", "color: #008000");
 	init();
 
@@ -351,6 +351,158 @@ if(typeof ice === "undefined") ice = {modules: []};
 			elem.addEventListener("contextmenu", stop);
 		}
 	}
+	ice.dom.append = function(elem, location = document.body, where = "child") {
+		if(where === "child") location.appendChild(elem);
+		else if (where === "before") location.parentNode.insertBefore(elem, location);
+		else if(where === "after") location.parentNode.insertBefore(elem, location.nextSibling);
+		return elem;
+	}
+	ice.dom.remove = function(elem) {
+		return elem.parentNode.removeChild(elem);
+	}
+	ice.dom.getRadio = function(name) {
+		let radios = document.getElementsByName(name);
+		for(let radio of radios) if(radio.checked) return radio.value;
+	}
+	ice.dom.get = document.querySelector;
+
+	ice.dom.createH1 = function(text = "") {
+		let elem = document.createElement("h1");
+		elem.appendChild(document.createTextNode(text));
+		return elem;
+	}
+	ice.dom.createH2 = function(text = "") {
+		let elem = document.createElement("h2");
+		elem.appendChild(document.createTextNode(text));
+		return elem;
+	}
+	ice.dom.createH3 = function(text = "") {
+		let elem = document.createElement("h3");
+		elem.appendChild(document.createTextNode(text));
+		return elem;
+	}
+	ice.dom.createH4 = function(text = "") {
+		let elem = document.createElement("h4");
+		elem.appendChild(document.createTextNode(text));
+		return elem;
+	}
+	ice.dom.createH5 = function(text = "") {
+		let elem = document.createElement("h5");
+		elem.appendChild(document.createTextNode(text));
+		return elem;
+	}
+	ice.dom.createH6 = function(text = "") {
+		let elem = document.createElement("h6");
+		elem.appendChild(document.createTextNode(text));
+		return elem;
+	}
+	ice.dom.createDiv = function() {
+		return document.createElement("div");
+	}
+	ice.dom.createP = function(text = "") {
+		let elem = document.createElement("p");
+		elem.appendChild(document.createTextNode(text));
+		return elem;
+	}
+	ice.dom.createA = function(text = "link", href = "javascript: void(0);", newTab) {
+		let elem = document.createElement("a");
+		elem.appendChild(document.createTextNode(text));
+		if(typeof href === "function") href = `javascript: (${href.toString()})();`;
+		elem.href = href;
+		if(newTab !== undefined) elem.target = "_blank";
+		return elem;
+	}
+	ice.dom.createBr = function() {
+		return document.createElement("br");
+	}
+	ice.dom.createSpan = function(text = "") {
+		let elem = document.createElement("span");
+		elem.appendChild(document.createTextNode(text));
+		return elem;
+	}
+	ice.dom.createImg = function(src) {
+		let elem = document.createElement("img");
+		if(src !== undefined) elem.src = src;
+		return elem;
+	}
+	ice.dom.createCanvas = function(width, height = width) {
+		let elem = document.createElement("canvas");
+		if(width !== undefined) elem.width = width;
+		if(height !== undefined) elem.height = height;
+		return elem;
+	}
+	// TODO ice.dom.createTable
+	ice.dom.createButton = function(text = "Button", onclick) {
+		let elem  = document.createElement("button");
+		elem.appendChild(document.createTextNode(text));
+		elem.onclick = onclick;
+		return elem;
+	}
+	ice.dom.createTextInput = function(placeholder) {
+		let elem = document.createElement("input");
+		elem.type = "text";
+		if(placeholder !== undefined) elem.placeholder = placeholder;
+		return elem;
+	}
+	ice.dom.createCheckbox = function(checked, disabled) {
+		let elem = document.createElement("input");
+		elem.type = "checkbox";
+		elem.checked = checked;
+		elem.disabled = disabled;
+		return elem;
+	}
+	ice.dom.createColorInput = function(def) {
+		let elem = document.createElement("input");
+		elem.type = "color";
+		elem.value = def;
+		return elem;
+	}
+	ice.dom.createDateInput = function(def) {
+		let elem = document.createElement("input");
+		elem.type = "date";
+		elem.value = def;
+		return elem;
+	}
+	ice.dom.createFileInput = function(accept, multiple) {
+		let elem = document.createElement("input");
+		elem.type = "file";
+		elem.accept = accept;
+		elem.multiple = multiple;
+		return elem;
+	}
+	ice.dom.createNumberInput = function(def, min, max, step, placeholder) {
+		let elem = document.createElement("input");
+		elem.type = "number";
+		elem.value = def;
+		if(min !== undefined) elem.min = min;
+		if(max !== undefined) elem.max = max;
+		if(step !== undefined) elem.step = step;
+		if(placeholder !== undefined) elem.placeholder = placeholder;
+		return elem;
+	}
+	ice.dom.createPasswordInput = function() {
+		let elem = document.createElement("input");
+		elem.type = "password";
+		return elem;
+	}
+	ice.dom.createRadioInput = function(name, value, checked) {
+		let elem = document.createElement("input");
+		elem.type = "radio";
+		elem.name = name;
+		elem.value = value;
+		elem.checked = checked;
+		return elem;
+	}
+	ice.dom.createSlider = function(min, max, step, def) {
+		let elem = document.createElement("input");
+		elem.type = "range";
+		elem.min = min;
+		elem.max = max;
+		if(step !== undefined) elem.step = step;
+		elem.value = def;
+
+		return elem;
+	}
 
 	// Constructors
 
@@ -456,6 +608,10 @@ if(typeof ice === "undefined") ice = {modules: []};
 				document.appendChild(document.createElement("html"));
 			}
 			document.documentElement.appendChild(document.createElement("head"));
+		}
+		// Ensure the document has a body (for ice.dom.append)
+		if(document.body === null) {
+			document.documentElement.appendChild(document.createElement("body"));
 		}
 	}
 })();
