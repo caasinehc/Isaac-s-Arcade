@@ -1,0 +1,10 @@
+button {
+	height: 32px;
+	font: bold 16px Arial;
+	margin: 2px;
+	border: none;
+	outline: none;
+}
+button:hover {
+	box-shadow: 2px 2px 2px black;
+}

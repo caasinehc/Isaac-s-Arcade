@@ -1,15 +1,14 @@
-frameRate(12);
-
-let boxSize = 20;
+let boxSize = 15;
 let cols = width / boxSize;
 let rows = height / boxSize;
 let gridSize = new physics.Vector(cols, rows);
 let gridMiddle = new physics.Vector(cols / 2, rows / 2);
 
-let snake = [gridMiddle.clone()];
+let snake = [physics.Vector(0, gridMiddle.y)];
 let food = new physics.Vector().randomize(physics.origin(), gridSize).floor();
 let haveTurned = false;
-let gameOver = false;
+let gameOver = true;
+let havePlayed = false;
 
 const NORTH = "N";
 const SOUTH = "S";
@@ -17,24 +16,147 @@ const WEST = "W";
 const EAST = "E";
 let facing = EAST;
 
+let fair = true;
 let cheats = {};
 cheats.invul = false;
+cheats.superGrow = false;
 
-let slider = dom.createSlider(1, 5, 1, 3);
+const difficulties = [
+	{
+		name: "Slug",
+		frameRate: 5
+	},
+	{
+		name: "Snail",
+		frameRate: 10
+	},
+	{
+		name: "Snake",
+		frameRate: 15
+	},
+	{
+		name: "Cobra",
+		frameRate: 20
+	},
+	{
+		name: "Dragon",
+		frameRate: 25
+	}
+];
+let difficulty = difficulties[floor((difficulties.length - 1) / 2)];
+let playedDifficulty = difficulty.name;
+
+let slider = dom.createSlider(0, difficulties.length - 1, 1, floor((difficulties.length - 1) / 2));
+dom.append(dom.createBr());
 dom.append(slider);
 slider.onchange = (e) => {
-	frameRate(slider.value * 5);
+	difficulty = difficulties[slider.value];
 }
+slider.style = `width: ${width}px;`;
+
+let colorList = colors.hues;
+
+let bodyColorIndex = 1;
+let bodyColor = colorList[bodyColorIndex];
+let bodyColorButton = dom.createButton("Snake Color", function() {
+	bodyColorIndex = (bodyColorIndex + 1) % colorList.length;
+	bodyColor = colorList[bodyColorIndex];
+	this.style.backgroundColor = bodyColor;
+});
+dom.append(dom.createBr());
+dom.append(bodyColorButton);
+bodyColorButton.style = (
+	`width: ${width / 3}px;
+background-color: ${bodyColor}`
+);
+
+let foodColorIndex = 4;
+let foodColor = colorList[foodColorIndex];
+let foodColorButton = dom.createButton("Food Color", function() {
+	foodColorIndex = (foodColorIndex + 1) % colorList.length;
+	foodColor = colorList[foodColorIndex];
+	this.style.backgroundColor = foodColor;
+});
+dom.append(foodColorButton);
+foodColorButton.style = (
+	`width: ${width / 3}px;
+background-color: ${foodColor};`
+)
+
+let styleList = [
+	{
+		name: "block",
+		css: {
+			borderStyle: "solid",
+			borderRadius: "0px"
+		}
+	},
+	{
+		name: "circle",
+		css: {
+			borderStyle: "solid",
+			borderRadius: "32px"
+		}
+	},
+	{
+		name: "line",
+		css: {
+			borderStyle: "dashed",
+			borderRadius: "0px"
+		}
+	}
+];
+
+let styleIndex = 0;
+let style = styleList[styleIndex];
+let styleButton = dom.createButton("Style", function() {
+	styleIndex = (styleIndex + 1) % styleList.length;
+	style = styleList[styleIndex];
+	this.style.borderStyle = style.css.borderStyle;
+	this.style.borderRadius = style.css.borderRadius;
+});
+dom.append(styleButton);
+styleButton.style = (
+	`width: ${width / 3}px;
+background-color: #202020;
+color: #FFFFFF;
+border: 1px solid #FFFFFF;`
+);
 
 function restart() {
-	slider.style.display = "none";
-	snake = [gridMiddle.clone()];
+	noLoop();
+	slider.disabled = true;
+	playedDifficulty = difficulty.name;
+	snake = [physics.Vector(0, gridMiddle.y)];
+	facing = EAST;
 	eatFood();
-	haveTurned = false;
+	havePlayed = true;
+	haveTurned = true;
 	gameOver = false;
+	fair = true;
+	background();
+	fill(0);
+	noStroke();
+	font("Arial", 48);
+	textAlign("middle", "center");
+	text("Starting in 3...", midWidth, midHeight);
+	setTimeout(() => {
+		background();
+		text("Starting in 2...", midWidth, midHeight);
+	}, 1000);
+	setTimeout(() => {
+		background();
+		text("Starting in 1...", midWidth, midHeight);
+	}, 2000);
+	setTimeout(() => {
+		frameRate(difficulty.frameRate);
+		loop();
+	}, 3000);
 }
+
 function endGame() {
-	slider.style.display = "";
+	slider.disabled = false;
+	frameRate(60);
 	gameOver = true;
 }
 
@@ -74,31 +196,47 @@ function touchingSelf() {
 }
 
 function renderFood() {
-	fill(colors.ORANGE);
+	fill(foodColor);
 	noStroke()
-	rect(food.x * boxSize, food.y * boxSize, boxSize);
+	if(style.name === "block") {
+		rect(food.x * boxSize, food.y * boxSize, boxSize);
+	}
+	else if(style.name === "circle" || style.name === "line") {
+		point(food.clone().add(0.5).mult(boxSize), floor(boxSize / 2));
+	}
 }
 
 function renderSnake() {
-	fill(colors.LIME);
+	fill(bodyColor);
 	noStroke();
-	for(let section of snake) {
-		rect(section.x * boxSize, section.y * boxSize, boxSize);
+	if(style.name === "block") {
+		for(let section of snake) {
+			rect(section.x * boxSize, section.y * boxSize, boxSize);
+		}
 	}
-	// FUTURE TODO:
-	// rect(snake[0].x * boxSize, snake[0].y * boxSize, boxSize);
-	// for(let i = 1; i < snake.length; i++) {
-	// 	line(snake[i].x * boxSize + boxSize / 2, snake[i].y * boxSize + boxSize / 2, snake[i - 1].x * boxSize + boxSize / 2, snake[i - 1].y * boxSize + boxSize / 2);
-	// }
+	else if(style.name === "circle") {
+		for(let section of snake) {
+			point(section.clone().add(0.5).mult(boxSize), floor(boxSize / 2));
+		}
+	}
+	else if(style.name === "line") {
+		point(snake[0].clone().add(0.5).mult(boxSize), floor(boxSize / 2));
+		stroke(bodyColor);
+		for(let i = 1; i < snake.length; i++) {
+			line(snake[i].x * boxSize + floor(boxSize / 2), snake[i].y * boxSize + floor(boxSize / 2), snake[i - 1].x * boxSize + floor(boxSize / 2), snake[i - 1].y * boxSize + floor(boxSize / 2));
+		}
+	}
 }
 
 function keyDown(e, key) {
+	key = key.toLowerCase();
+	if(key === " " && gameOver) restart();
 	if(haveTurned) return;
 	haveTurned = true;
-	if(key === "w" && facing !== SOUTH) facing = NORTH;
-	else if(key === "s" && facing !== NORTH) facing = SOUTH;
-	else if(key === "a" && facing !== EAST) facing = WEST;
-	else if(key === "d" && facing !== WEST) facing = EAST;
+	if((key === "w" || key === "arrowup") && facing !== SOUTH) facing = NORTH;
+	else if((key === "s" || key === "arrowdown") && facing !== NORTH) facing = SOUTH;
+	else if((key === "a" || key === "arrowleft") && facing !== EAST) facing = WEST;
+	else if((key === "d" || key === "arrowright") && facing !== WEST) facing = EAST;
 }
 
 function click(e, button) {
@@ -107,43 +245,48 @@ function click(e, button) {
 
 function tick() {
 	if(!gameOver) {
-
 		snake.unshift(getNextPos());
 		if(snake[0].equals(food)) eatFood();
-		else snake.pop();
+		else if(!(cheats.superGrow && isDown("mouse"))) snake.pop();
 
 		if(!cheats.invul && colliding()) endGame();
-
 		haveTurned = false;
+
+		if(fair) {
+			for(let cheat in cheats) {
+				if(cheats[cheat]) fair = false;
+			}
+		}
 	}
 }
 
 function render() {
 	background();
 
-	for(let x = 0; x < cols; x++) {
-		for(let y = 0; y < rows; y++) {
-			fill(255);
+	if(havePlayed) {
+		renderFood();
+		renderSnake();
+
+		if(gameOver) {
+			blur(4);
+
+			fill(0);
 			noStroke();
-			rect(x * boxSize, y * boxSize, boxSize);
+			font("Arial", 64);
+			textAlign("alphabetic", "center");
+			text("You Died!", midWidth, midHeight - 20);
+
+			font(48);
+			textAlign("hanging");
+			text("Click anywhere to restart", midWidth, midHeight + 20);
 		}
 	}
-
-	renderFood();
-	renderSnake();
-
-	if(gameOver) {
-		blur(4);
-
+	else {
 		fill(0);
 		noStroke();
-		font("Arial", 64);
-		textAlign("alphabetic", "center");
-		text("You Died!", midWidth, midHeight - 20);
-
-		font(48);
-		textAlign("hanging");
-		text("Click anywhere to restart", midWidth, midHeight + 20);
+		font("Arial", 48);
+		textAlign("middle", "center");
+		text("Click anywhere to begin", midWidth, midHeight);
 	}
 
 	fill(0);
@@ -151,4 +294,7 @@ function render() {
 	font("Arial", 32);
 	textAlign("alphabetic", "start");
 	text(`Score: ${snake.length}`, 10, height - 10);
+
+	textAlign("end");
+	text(`Difficulty: ${playedDifficulty}${fair ? "" : " (cheats)"}`, width - 10, height - 10);
 }

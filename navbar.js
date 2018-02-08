@@ -3,7 +3,7 @@
 		"Home": "../Home/Home.html",
 		"Games": {
 			"Don't Touch Red!": "../Don't Touch Red!/Don't Touch Red!.html",
-			"game2": "javascript: alert('game2 clicked!');",
+			"Snakes": "../Snakes/Snakes.html",
 			"game3": "javascript: alert('game3 clicked!');"
 		},
 		"Random": {
@@ -50,6 +50,7 @@
 		"	overflow: hidden;\n" +
 		"	background: " + styles.background + ";\n" +
 		"	border: " + styles.border + ";\n" +
+		"	user-select: none;\n" +
 		"}\n" +
 		// NAVBAR BUTTONS
 		".navbar li {\n" +
@@ -84,6 +85,7 @@
 		"	background: " + styles.background + ";\n" +
 		"	border: " + styles.border + ";\n" +
 		"	border-top: none;\n" + // removes top part of border
+		"	box-shadow: 4px 4px 4px black;\n" +
 		"	min-width: " + styles.dropdown.width + "px;\n" +
 		"	z-index: 1;\n" + // keeps dropdown above everything else
 		"}\n" +

@@ -20,3 +20,6 @@ a.subtleLink {
 a.subtleLink:hover {
 	text-decoration: underline;
 }
+button {
+	user-select: none;
+}
