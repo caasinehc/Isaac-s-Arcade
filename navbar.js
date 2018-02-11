@@ -4,7 +4,7 @@
 		"Games": {
 			"Don't Touch Red!": "../Don't Touch Red!/Don't Touch Red!.html",
 			"Snakes": "../Snakes/Snakes.html",
-			"game3": "javascript: alert('game3 clicked!');"
+			"Skeet Hero": "../Skeet Hero/Skeet Hero.html"
 		},
 		"Random": {
 			"random1": "javascript: alert('random1 clicked!');",
