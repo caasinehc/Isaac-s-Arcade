@@ -7,7 +7,7 @@
 
 // The ice library
 let {
-	math, physics, colors, debug, graphics, dom, time
+	math, physics, colors, debug, graphics, dom, time, audio
 } = ice;
 
 // Math
