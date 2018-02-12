@@ -6,31 +6,37 @@ let score = 0;
 let lives = 5;
 let alive = true;
 let halloweenMode = false;
-let sounds = {
-	gunshot: "Assets/Audio/gunshot.mp3",
-	reload: "Assets/Audio/reload.mp3"
-}
-let timing = {
-	cooldown: floor(frameRate()),
-	reload: floor(frameRate() * 0.25)
-}
-let cheats = {
-	invul: false,
-	lines: false,
-	iNeverMiss: false,
-	machineGun: false,
-	magneto: false
-}
+let sounds = {};
+sounds.gunshot = "Assets/Audio/gunshot.mp3";
+sounds.reload = "Assets/Audio/reload.mp3";
+let timing = {};
+timing.cooldown = floor(frameRate());
+timing.reload = floor(frameRate() * 0.25);
+let cheats = {};
+cheats.invul = false;
+cheats.lines = false;
+cheats.iNeverMiss = false;
+cheats.machineGun = false;
+let powerups = {};
+powerups.machineGun = 0;
+powerups.freeze = 0;
 
 function startGame() {
 	skeets = [];
 	cooldown = 0;
+	score = 0;
 	lives = 5;
 	alive = true;
 }
 
 function endGame() {
 	alive = false;
+	cooldown = 0;
+}
+
+function pull() {
+	if(math.chance(1 / 10)) skeets.push(new Skeet("freeze"));
+	else skeets.push(new Skeet("normal"));
 }
 
 function renderCursor() {
@@ -51,6 +57,7 @@ function shoot() {
 	for(let skeet of skeets) {
 		if(physics.pointInCircle(mousePos, skeet.pos, skeet.rad)) {
 			skeet.dead = true;
+			if(skeet.type === "freeze") powerups.freeze = frameRate() * 10;
 			hit++;
 		}
 	}
@@ -58,7 +65,10 @@ function shoot() {
 }
 
 function click(e, button) {
-	if(cooldown <= 0 || cheats.machineGun) {
+	if(!alive) {
+		startGame();
+	}
+	else if(cooldown <= 0 || powerups.machineGun > 0) {
 		cooldown = timing.cooldown;
 		shoot();
 	}
@@ -74,7 +84,11 @@ function tick() {
 	if(cooldown > 0) cooldown--;
 	if(cooldown === timing.reload) audio.play(sounds.reload);
 
-	if(skeets.length < 30 && math.chance(1 / 100)) skeets.push(new Skeet());
+	for(let key in powerups) {
+		if(powerups[key] > 0) powerups[key]--;
+	}
+
+	if(skeets.length < 3 && math.chance(1 / 100)) pull();
 
 	for(let i = skeets.length - 1; i >= 0; i--) {
 		let skeet = skeets[i];
@@ -102,7 +116,7 @@ function render() {
 
 	for(let skeet of skeets) skeet.render();
 
-	// recolor(colors.CERULEAN);
+	if(powerups.freeze > 0) recolor(colors.CERULEAN);
 
 	fill(colors.RED);
 	noStroke();
@@ -115,14 +129,19 @@ function render() {
 
 	fill(0);
 	noStroke();
-	textAlign("right");
+	font("Arial", 36);
+	textAlign("alphabetic", "right");
 	text(`Life: `, width - 150 - 10, height - 10);
 
-	renderCursor();
-
-	fill(0);
-	noStroke();
-	font("Arial", 36);
-	textAlign("alphabetic", "left");
+	textAlign("left");
 	text(`Score: ${score}`, 10, height - 10);
+
+	if(!alive) {
+		textAlign("center", "alphabetic");
+		text(`You lost with a score of ${score}`, midWidth, midHeight - 20);
+		textAlign("hanging");
+		text("Click anywhere to restart", midWidth, midHeight + 20);
+	}
+
+	renderCursor();
 }
