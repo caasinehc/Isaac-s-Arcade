@@ -7,9 +7,7 @@
 			"Skeet Hero": "../Skeet Hero/Skeet Hero.html"
 		},
 		"Random": {
-			"random1": "javascript: alert('random1 clicked!');",
-			"random2": "javascript: alert('random2 clicked!');",
-			"random3": "javascript: alert('random3 clicked!');"
+			"Framework Prototyping Sandbox": "../Framework Prototyping Sandbox/Framework Prototyping Sandbox.html"
 		},
 		"Old Projects": {
 			"Isaac's Arcade (old)": "../Old site/index.html"
