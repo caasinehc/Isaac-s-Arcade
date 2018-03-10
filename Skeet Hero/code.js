@@ -6,6 +6,7 @@ let score = 0;
 let lives = 5;
 let alive = true;
 let halloweenMode = false;
+let muted = false;
 let sounds = {};
 sounds.gunshot = "Assets/Audio/gunshot.mp3";
 sounds.reload = "Assets/Audio/reload.mp3";
@@ -52,7 +53,7 @@ function renderCursor() {
 }
 
 function shoot() {
-	audio.play(sounds.gunshot);
+	if(!muted) audio.play(sounds.gunshot);
 	let hit = 0;
 	for(let skeet of skeets) {
 		if(physics.pointInCircle(mousePos, skeet.pos, skeet.rad)) {
@@ -65,12 +66,17 @@ function shoot() {
 }
 
 function click(e, button) {
-	if(!alive) {
-		startGame();
+	if(physics.pointInRect(mousePos, physics.origin(), 30, 30)) {
+		muted = !muted;
 	}
-	else if(cooldown <= 0 || powerups.machineGun > 0) {
-		cooldown = timing.cooldown;
-		shoot();
+	else {
+		if(!alive) {
+			startGame();
+		}
+		else if(cooldown <= 0 || powerups.machineGun > 0) {
+			cooldown = timing.cooldown;
+			shoot();
+		}
 	}
 }
 
@@ -82,7 +88,7 @@ function tick() {
 	}
 
 	if(cooldown > 0) cooldown--;
-	if(cooldown === timing.reload) audio.play(sounds.reload);
+	if(cooldown === timing.reload && !muted) audio.play(sounds.reload);
 
 	for(let key in powerups) {
 		if(powerups[key] > 0) powerups[key]--;
@@ -113,6 +119,7 @@ function render() {
 	if(window.location.href.startsWith("file:///")) taint();
 	// </TEMP>
 	image("Assets/Images/background.png");
+	image("Assets/Images/" + (muted ? "mute.png" : "sound.png"), 0, 0, 30, 30);
 
 	for(let skeet of skeets) skeet.render();
 
