@@ -47,32 +47,32 @@ function render() {
 	// render
 }`
 );
-let html = localStorage.getItem(`${page}.` + "html");
+let html = localStorage.getItem(`${page}.html`);
 if(html === null) {
 	html = defaultHTML;
-	localStorage.setItem(`${page}.` + "html", html);
+	localStorage.setItem(`${page}.html`, html);
 }
-let js = localStorage.getItem(`${page}.` + "js");
+let js = localStorage.getItem(`${page}.js`);
 if(js === null) {
 	js = defaultJS;
-	localStorage.setItem(`${page}.` + "js", js);
+	localStorage.setItem(`${page}.js`, js);
 }
-let fontSize = localStorage.getItem(`${page}.` + "fontSize");
+let fontSize = localStorage.getItem(`${page}.fontSize`);
 if(fontSize === null) {
 	fontSize = 13;
-	localStorage.setItem(`${page}.` + "fontSize", fontSize);
+	localStorage.setItem(`${page}.fontSize`, fontSize);
 }
 fontSize = parseInt(fontSize);
-let tabSize = localStorage.getItem(`${page}.` + "tabSize");
+let tabSize = localStorage.getItem(`${page}.tabSize`);
 if(tabSize === null) {
 	tabSize = 4;
-	localStorage.setItem(`${page}.` + "tabSize", tabSize);
+	localStorage.setItem(`${page}.tabSize`, tabSize);
 }
 tabSize = parseInt(tabSize);
 
 function save() {
-	localStorage.setItem(`${page}.` + "html", html);
-	localStorage.setItem(`${page}.` + "js", js);
+	localStorage.setItem(`${page}.html`, html);
+	localStorage.setItem(`${page}.js`, js);
 }
 function restart() {
 	html = defaultHTML;
@@ -97,7 +97,7 @@ function addFontSize(n) {
 	fontSize += n;
 	if(fontSize < 6) fontSize = 6;
 	else if(fontSize > 32) fontSize = 32;
-	localStorage.setItem(`${page}.` + "fontSize", fontSize);
+	localStorage.setItem(`${page}.fontSize`, fontSize);
 	codeInput.style.fontSize = fontSize + "px";
 }
 function setTabSize() {
@@ -107,7 +107,7 @@ function setTabSize() {
 		return;
 	}
 	tabSize = size;
-	localStorage.setItem(`${page}.` + "tabSize", tabSize);
+	localStorage.setItem(`${page}.tabSize`, tabSize);
 	codeInput.style.tabSize = tabSize;
 }
 
@@ -142,7 +142,9 @@ codeInput.style.tabSize = tabSize;
 codeInput.value = js;
 codeInput.oninput = updateCode;
 codeInput.onkeydown = function(e) {
-	if(e.key === "Tab") {
+	let key = e.key;
+	let ctrl = e.ctrlKey;
+	if(key === "Tab") {
 		e.preventDefault();
 		let val = this.value;
 		let start = this.selectionStart;
@@ -150,6 +152,63 @@ codeInput.onkeydown = function(e) {
 
 		this.value = val.substring(0, start) + "\t" + val.substring(end);
 		this.selectionStart = this.selectionEnd = start + 1;
+	}
+	else if(key === "/" && ctrl) {
+		// TODO Doesn't yet work for multiple lines
+		e.preventDefault();
+		let val = this.value;
+		let start = this.selectionStart;
+		let end = this.selectionEnd;
+		let linesStart = val.lastIndexOf("\n", start - 1) + 1;
+		let linesEnd = val.indexOf("\n", end);
+		if(linesEnd === -1) linesEnd = val.length;
+		let lines = val.substring(linesStart, linesEnd);
+		if(start === end && false) {
+			let commented = lines.trim().startsWith("//");
+
+			if(commented) {
+				this.value = val.substring(0, linesStart) + lines.replace(/(\t*)\/\/ ?(.*)/g, "$1$2") + val.substring(linesEnd);
+				this.selectionStart = this.selectionEnd = start - 3;
+			}
+			else {
+				this.value = val.substring(0, linesStart) + lines.replace(/(\t*)(.*)/, "$1// $2") + val.substring(linesEnd);
+				this.selectionStart = this.selectionEnd = start + 3;
+			}
+		}
+		else {
+			let linesArr = lines.split("\n");
+			let commentAll = false;
+			for(let line of linesArr) {
+				if(!line.trim().startsWith("//")) {
+					commentAll = true;
+					break;
+				}
+			}
+			let offset = 0;
+			let startOffset = 0;
+			for(let i = 0; i < linesArr.length; i++) {
+				let line = linesArr[i];
+				let commented = line.trim().startsWith("//");
+
+				if(commented) {
+					if(!commentAll) {
+						linesArr[i] = line.replace(/(\t*)\/\/ ?(.*)/g, "$1$2");
+						offset -= 3;
+						if(i === 0) startOffset -= 3;
+					}
+				}
+				else {
+					if(commentAll) {
+						linesArr[i] = line.replace(/(\t*)(.*)/, "$1// $2");
+						offset += 3;
+						if(i === 0) startOffset += 3;
+					}
+				}
+			}
+			this.value = val.substring(0, linesStart) + linesArr.join("\n") + val.substring(linesEnd);
+			this.selectionStart = start + startOffset;
+			this.selectionEnd = end + offset;
+		}
 	}
 }
 
