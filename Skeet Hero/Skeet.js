@@ -8,8 +8,13 @@ function Skeet(type = "normal") {
 	this.type = type;
 	this.color = (
 		type === "freeze" ? colors.CERULEAN :
+		type === "medkit" ? colors.RED :
+		type === "scatter" ? colors.RUST :
+		type === "machineGun" ? colors.GRAY :
 		"#FF4000"
 	);
+	this.transColor = new colors.Color(this.color).rgba.splice(0, 3);
+	this.transColor.push(0.5);
 
 	this.lines = function() {
 		let clone = new Skeet();
@@ -17,7 +22,7 @@ function Skeet(type = "normal") {
 		clone.vel = this.vel.clone();
 		clone.acc = this.acc.clone();
 
-		stroke(255, 64, 0, 1);
+		stroke(this.color);
 		line(clone.pos, clone.pos.clone().add(clone.vel.clone().mult(25)));
 
 		let pointList = [clone.pos.clone()];
@@ -27,7 +32,7 @@ function Skeet(type = "normal") {
 			pointList.push(clone.pos.clone());
 		}
 
-		stroke(255, 64, 0, 0.5);
+		stroke(this.transColor);
 		lines(pointList);
 	}
 
