@@ -228,6 +228,13 @@ function renderSnake() {
 	}
 }
 
+function getQuadrant(x, y) {
+	let xNorm = x / width;
+	let yNorm = y / height;
+	if(xNorm + yNorm < 1) return xNorm > yNorm ? NORTH : WEST;
+	return xNorm > yNorm ? EAST : SOUTH;
+}
+
 function keyDown(e, key) {
 	key = key.toLowerCase();
 	if(key === " " && gameOver) restart();
@@ -240,7 +247,16 @@ function keyDown(e, key) {
 }
 
 function click(e, button) {
-	if(gameOver) restart();
+	if(gameOver) return void(restart());
+	
+	if(haveTurned) return;
+	haveTurned = true;
+
+	let quadrant = getQuadrant(mouseX, mouseY);
+	if(quadrant === NORTH && facing !== SOUTH) facing = NORTH;
+	else if(quadrant === SOUTH && facing !== NORTH) facing = SOUTH;
+	else if(quadrant === WEST && facing !== EAST) facing = WEST;
+	else if(quadrant === EAST && facing !== WEST) facing = EAST;
 }
 
 function tick() {

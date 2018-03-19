@@ -6,6 +6,7 @@ let score = 0;
 let lives = 5;
 let alive = true;
 let halloweenMode = false;
+let muted = false;
 let sounds = {};
 sounds.gunshot = "Assets/Audio/gunshot.mp3";
 sounds.reload = "Assets/Audio/reload.mp3";
@@ -20,6 +21,7 @@ cheats.machineGun = false;
 let powerups = {};
 powerups.machineGun = 0;
 powerups.freeze = 0;
+powerups.scatter = 0;
 
 function startGame() {
 	skeets = [];
@@ -31,33 +33,60 @@ function startGame() {
 
 function endGame() {
 	alive = false;
-	cooldown = 0;
+	cooldown = frameRate() * 2;
+	for(let key in powerups) powerups[key] = 0;
 }
 
 function pull() {
-	if(math.chance(1 / 10)) skeets.push(new Skeet("freeze"));
+	if(
+		math.chance(1 / 10) &&
+		powerups.machineGun === 0 &&
+		powerups.freeze === 0 &&
+		powerups.scatter === 0
+	) skeets.push(new Skeet(random(["freeze", "medkit", "scatter", "machineGun"])));
 	else skeets.push(new Skeet("normal"));
 }
 
-function renderCursor() {
-	fill(cooldown > timing.reload ? colors.RED : colors.BLACK);
+function cursorAt(pos) {
+	fill(powerups.machineGun > 0 ? colors.GRAY : cooldown > timing.reload && alive ? colors.RED : colors.BLACK);
 	noStroke();
-	rect(mouseX - 11, mouseY - 1, 22, 2);
-	rect(mouseX - 1, mouseY - 11, 2, 22);
+	rect(pos.x - 11, pos.y - 1, 22, 2);
+	rect(pos.x - 1, pos.y - 11, 2, 22);
 
 	stroke(fill());
 	noFill();
 	lineWidth(2);
-	point(mousePos, 11);
+	point(pos, 11);
+}
+
+function renderCursor() {
+	cursorAt(mousePos);
+	if(powerups.scatter > 0) {
+		cursorAt(mousePos.clone().addXY(20, 20));
+		cursorAt(mousePos.clone().addXY(20, -20));
+		cursorAt(mousePos.clone().addXY(-20, 20));
+		cursorAt(mousePos.clone().addXY(-20, -20));
+	}
 }
 
 function shoot() {
-	audio.play(sounds.gunshot);
+	if(!muted) audio.play(sounds.gunshot);
 	let hit = 0;
 	for(let skeet of skeets) {
-		if(physics.pointInCircle(mousePos, skeet.pos, skeet.rad)) {
+		if(
+			physics.pointInCircle(mousePos, skeet.pos, skeet.rad) ||
+			powerups.scatter > 0 && (
+				physics.pointInCircle(mousePos.clone().addXY(20, 20), skeet.pos, skeet.rad) ||
+				physics.pointInCircle(mousePos.clone().addXY(20, -20), skeet.pos, skeet.rad) || 
+				physics.pointInCircle(mousePos.clone().addXY(-20, 20), skeet.pos, skeet.rad) ||
+				physics.pointInCircle(mousePos.clone().addXY(-20, -20), skeet.pos, skeet.rad)
+			)
+		) {
 			skeet.dead = true;
 			if(skeet.type === "freeze") powerups.freeze = frameRate() * 10;
+			else if(skeet.type === "medkit") lives = clamp(lives + 1, 5);
+			else if(skeet.type === "scatter") powerups.scatter = frameRate() * 10;
+			else if(skeet.type === "machineGun") powerups.machineGun = frameRate() * 10;
 			hit++;
 		}
 	}
@@ -65,24 +94,29 @@ function shoot() {
 }
 
 function click(e, button) {
-	if(!alive) {
-		startGame();
+	if(physics.pointInRect(mousePos, physics.origin(), 30, 30)) {
+		muted = !muted;
 	}
-	else if(cooldown <= 0 || powerups.machineGun > 0) {
-		cooldown = timing.cooldown;
-		shoot();
+	else {
+		if(!alive && cooldown <= 0) {
+			startGame();
+		}
+		else if(cooldown <= 0 || powerups.machineGun > 0) {
+			cooldown = timing.cooldown;
+			shoot();
+		}
 	}
 }
 
 function tick() {
+	if(cooldown > 0) cooldown--;
 	if(!alive) return;
 	if(lives <= 0) {
 		endGame();
 		return;
 	}
 
-	if(cooldown > 0) cooldown--;
-	if(cooldown === timing.reload) audio.play(sounds.reload);
+	if(cooldown === timing.reload && !muted) audio.play(sounds.reload);
 
 	for(let key in powerups) {
 		if(powerups[key] > 0) powerups[key]--;
@@ -113,6 +147,7 @@ function render() {
 	if(window.location.href.startsWith("file:///")) taint();
 	// </TEMP>
 	image("Assets/Images/background.png");
+	image("Assets/Images/" + (muted ? "mute.png" : "sound.png"), 0, 0, 30, 30);
 
 	for(let skeet of skeets) skeet.render();
 

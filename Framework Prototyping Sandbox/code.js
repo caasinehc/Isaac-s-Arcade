@@ -142,14 +142,99 @@ codeInput.style.tabSize = tabSize;
 codeInput.value = js;
 codeInput.oninput = updateCode;
 codeInput.onkeydown = function(e) {
-	if(e.key === "Tab") {
-		e.preventDefault();
-		let val = this.value;
-		let start = this.selectionStart;
-		let end = this.selectionEnd;
+	let key = e.key;
+	let ctrl = e.ctrlKey;
 
-		this.value = val.substring(0, start) + "\t" + val.substring(end);
+	let start = this.selectionStart;
+	let end = this.selectionEnd;
+	let val = this.value;
+	let before = val.substring(0, start);
+	let after = val.substring(end);
+
+	if(key === "Tab") {
+		e.preventDefault();
+		this.value = before + "\t" + after;
 		this.selectionStart = this.selectionEnd = start + 1;
+	}
+	if(ctrl) {
+		let lines = {};
+		lines.start = val.lastIndexOf("\n", start - 1) + 1;
+		lines.end = val.indexOf("\n", end);
+		if(lines.end === -1) lines.end = val.length;
+		lines.val = val.substring(lines.start, lines.end);
+		lines.before = val.substring(0, lines.start);
+		lines.after = val.substring(lines.end);
+		lines.list = {};
+		lines.list.val = lines.val.split("\n");
+		lines.list.all = val.split("\n");
+		lines.list.before = lines.before.split("\n");
+		lines.list.after = lines.after.split("\n");
+		lines.list.start = lines.list.before.length - 1;
+		lines.list.end = lines.list.start + lines.list.val.length - 1;
+
+		if(key === "/") {
+			e.preventDefault();
+			let commentAll = false;
+
+			for(let line of lines.list.val) {
+				if(!line.trim().startsWith("//")) {
+					commentAll = true;
+					break;
+				}
+			}
+			let newStart = start;
+			let newEnd = end;
+			for(let i = 0; i < lines.list.val.length; i++) {
+				let line = lines.list.val[i];
+				lines.list.val[i] = line.replace(commentAll ? /(\t*)(.*)/ : /(\t*)\/\/ ?(.*)/, commentAll ? "$1// $2" : "$1$2");
+				newEnd += lines.list.val[i].length - line.length;
+				if(i === 0) newStart += lines.list.val[i].length - line.length;
+			}
+			this.value = lines.before + lines.list.val.join("\n") + lines.after;
+			this.selectionStart = newStart;
+			this.selectionEnd = newEnd;
+			updateCode();
+		}
+		else if(key === "l" && ctrl) {
+			e.preventDefault();
+			this.selectionStart = Math.max(lines.start - 1, 0);
+			this.selectionEnd = lines.end;
+		}
+		else if(key === "ArrowUp") {
+			e.preventDefault();
+			if(lines.list.start === 0) return;
+
+			let prevLineStart = lines.start - lines.list.all[lines.list.start - 1].length;
+			let prevLineEnd = lines.start - 1;
+
+			this.value = (
+				lines.before.substring(0, prevLineStart - 1) +
+				lines.val + "\n" +
+				lines.list.all[lines.list.start - 1] +
+				lines.after
+			);
+			this.selectionStart = start - (prevLineEnd - prevLineStart) - 2;
+			this.selectionEnd = end - (prevLineEnd - prevLineStart) - 2;
+			updateCode();
+		}
+		else if(key === "ArrowDown") {
+			e.preventDefault();
+			if(lines.list.end === lines.list.all.length - 1) return;
+
+			let nextLineLength = lines.list.all[lines.list.end + 1].length;
+			let nextLineStart = lines.end + 1;
+			let nextLineEnd = nextLineStart + nextLineLength
+
+			this.value = (
+				lines.before +
+				lines.list.all[lines.list.end + 1] + "\n" +
+				lines.val +
+				lines.after.substring(nextLineLength + 1)
+			);
+			this.selectionStart = start + (nextLineEnd - nextLineStart) + 1;
+			this.selectionEnd = end + (nextLineEnd - nextLineStart) + 1;
+			updateCode();
+		}
 	}
 }
 
