@@ -47,32 +47,32 @@ function render() {
 	// render
 }`
 );
-let html = localStorage.getItem(`${page}.` + "html");
+let html = localStorage.getItem(`${page}.html`);
 if(html === null) {
 	html = defaultHTML;
-	localStorage.setItem(`${page}.` + "html", html);
+	localStorage.setItem(`${page}.html`, html);
 }
-let js = localStorage.getItem(`${page}.` + "js");
+let js = localStorage.getItem(`${page}.js`);
 if(js === null) {
 	js = defaultJS;
-	localStorage.setItem(`${page}.` + "js", js);
+	localStorage.setItem(`${page}.js`, js);
 }
-let fontSize = localStorage.getItem(`${page}.` + "fontSize");
+let fontSize = localStorage.getItem(`${page}.fontSize`);
 if(fontSize === null) {
 	fontSize = 13;
-	localStorage.setItem(`${page}.` + "fontSize", fontSize);
+	localStorage.setItem(`${page}.fontSize`, fontSize);
 }
 fontSize = parseInt(fontSize);
-let tabSize = localStorage.getItem(`${page}.` + "tabSize");
+let tabSize = localStorage.getItem(`${page}.tabSize`);
 if(tabSize === null) {
 	tabSize = 4;
-	localStorage.setItem(`${page}.` + "tabSize", tabSize);
+	localStorage.setItem(`${page}.tabSize`, tabSize);
 }
 tabSize = parseInt(tabSize);
 
 function save() {
-	localStorage.setItem(`${page}.` + "html", html);
-	localStorage.setItem(`${page}.` + "js", js);
+	localStorage.setItem(`${page}.html`, html);
+	localStorage.setItem(`${page}.js`, js);
 }
 function restart() {
 	html = defaultHTML;
@@ -97,7 +97,7 @@ function addFontSize(n) {
 	fontSize += n;
 	if(fontSize < 6) fontSize = 6;
 	else if(fontSize > 32) fontSize = 32;
-	localStorage.setItem(`${page}.` + "fontSize", fontSize);
+	localStorage.setItem(`${page}.fontSize`, fontSize);
 	codeInput.style.fontSize = fontSize + "px";
 }
 function setTabSize() {
@@ -107,7 +107,7 @@ function setTabSize() {
 		return;
 	}
 	tabSize = size;
-	localStorage.setItem(`${page}.` + "tabSize", tabSize);
+	localStorage.setItem(`${page}.tabSize`, tabSize);
 	codeInput.style.tabSize = tabSize;
 }
 
