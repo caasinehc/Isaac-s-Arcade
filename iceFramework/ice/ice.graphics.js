@@ -2,7 +2,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 (function() {
 	if(!ice.modules.includes("graphics")) ice.modules.push("graphics");
 	ice.graphics = {};
-	ice.graphics.version = "v2.2.13"; // This version of the ice.graphics module
+	ice.graphics.version = "v2.2.14"; // This version of the ice.graphics module
 	console.log("%cice.graphics " + ice.graphics.version + " imported successfully.", "color: #008000");
 
 	/*
@@ -395,6 +395,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 			return [settings.fontSize, settings.fontFamily, settings.italic, settings.bold];
 		}
 		this.textAlign = (arg1, arg2) => {
+			if(arg1 !== undefined && arg2 === undefined && (arg1.includes(" ") || arg1.includes(","))) [arg1, arg2] = arg1.split(/[ ,]+/)
 			if(arg1 === "left" || arg1 === "right" || arg1 === "center" || arg1 === "start" || arg1 === "end") {
 				settings.textAlign = arg1;
 				if(arg2 === "top" || arg2 === "hanging" || arg2 === "middle" || arg2 === "alphabetic" || arg2 === "ideographic" || arg2 === "bottom") {

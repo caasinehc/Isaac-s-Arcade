@@ -20,13 +20,26 @@ let {
 } = Math;
 const TAU = PI * 2;
 let {
-	randomInt, randomFloat, randomFrom, random,
+	randomInt, randomFloat, randomFrom, random, randomGaussian,
 	chance, percentChance, coinFlip,
 	pythag, distSq, dist,
 	map, clamp,
-	isPrime, fibonacci,
-	radToDeg, degToRad
+	isPrime, factors, fibonacci,
+	radToDeg, degToRad, binary
 } = math;
+
+// Physics
+let {
+	Vector,
+	pointInPoint, pointOnPoint, pointInCircle, pointOnCircle,
+	pointInRect, pointOnRect, pointInLine, pointOnLine,
+	circleInPoint, circleOnPoint, circleInCircle, circleOnCircle,
+	circleInRect, circleOnRect, circleInLine, circleOnLine,
+	rectInPoint, rectOnPoint, rectInCircle, rectOnCircle,
+	rectInRect, rectOnRect, rectInLine, rectOnLine,
+	lineInPoint, lineOnPoint, lineInCircle, lineOnCircle,
+	lineInRect, lineOnRect, lineInLine, lineOnLine
+} = physics;
 
 /* The main framework stuff */
 const RGB = "rgb";

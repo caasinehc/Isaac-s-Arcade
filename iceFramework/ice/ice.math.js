@@ -2,7 +2,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 (function() {
 	if(!ice.modules.includes("math")) ice.modules.push("math");
 	ice.math = {};
-	ice.math.version = "v2.0.11"; // This version of the ice.math module
+	ice.math.version = "v2.0.12"; // This version of the ice.math module
 	console.log("%cice.math " + ice.math.version + " imported successfully.", "color: #008000");
 
 	/*
@@ -19,6 +19,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 
 	ice.math.PI = Math.PI;
 	ice.math.TAU = ice.math.PI * 2;
+	ice.math.E = Math.E;
 
 	// Methods
 
@@ -60,6 +61,26 @@ if(typeof ice === "undefined") ice = {modules: []};
 		}
 		return Math.random() * (arg2 - arg1) + arg1;
 	}
+	ice.math.randomGaussian = (function() {
+		let haveExtra = false;
+		let extra = null;
+		return function(mean = 0, standardDeviation = 1) {
+			if(haveExtra) {
+				haveExtra = false;
+				return extra * standardDeviation + mean;
+			}
+			let u, v, s;
+			do {
+				u = 2 * Math.random() - 1;
+				v = 2 * Math.random() - 1;
+				s = u * u + v * v;
+			} while (s >= 1 || s === 0);
+			let mul = Math.sqrt(-2 * Math.log(s) / s);
+			extra = v * mul;
+			haveExtra = true;
+			return u * mul * standardDeviation + mean;
+		}
+	})();
 	ice.math.chance = function(chance) { // returns true [chance] out of 1 times ([1] always returns true, [0.50] returns true 50% of the time, etc.)
 		return Math.random() < chance;
 	}
@@ -119,6 +140,20 @@ if(typeof ice === "undefined") ice = {modules: []};
 		}
 		return true;
 	}
+	ice.math.factors = function(n) {
+		let isEven = n % 2 === 0;
+		let inc = isEven ? 1 : 2;
+		let factors = [1, n];
+
+		for(let curFactor = isEven ? 2 : 3, sqrtN = Math.sqrt(n); curFactor <= sqrtN; curFactor += inc) {
+			if(n % curFactor !== 0) continue;
+			factors.push(curFactor);
+			let compliment = n / curFactor;
+			if(compliment !== curFactor) factors.push(compliment);
+		}
+
+		return factors.sort((a, b) => a - b);
+	}
 	ice.math.radToDeg = function(rad) {
 		return rad * RAD_TO_DEG;
 	}
@@ -141,5 +176,8 @@ if(typeof ice === "undefined") ice = {modules: []};
 		if(n < min) return min;
 		if(n > max) return max;
 		return n;
+	}
+	ice.math.binary = function(n, pad = false) {
+		return (pad ? Array(Math.clz32(n) + 1).join("0") : "") + (n >>> 0).toString(2);
 	}
 })();

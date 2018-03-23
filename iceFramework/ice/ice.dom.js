@@ -2,7 +2,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 (function() {
 	if(!ice.modules.includes("dom")) ice.modules.push("dom");
 	ice.dom = {};
-	ice.dom.version = "v1.0.12"; // This version of the ice.dom module
+	ice.dom.version = "v1.0.13"; // This version of the ice.dom module
 	console.log("%cice.dom " + ice.dom.version + " imported successfully.", "color: #008000");
 
 	/*
@@ -479,7 +479,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 		elem.multiple = multiple;
 		return elem;
 	}
-	ice.dom.createNumberInput = function(def, min, max, step, placeholder) {
+	ice.dom.createNumberInput = function(min, max, step, def, placeholder) {
 		let elem = document.createElement("input");
 		elem.type = "number";
 		elem.value = def;
