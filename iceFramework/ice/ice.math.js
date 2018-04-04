@@ -2,7 +2,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 (function() {
 	if(!ice.modules.includes("math")) ice.modules.push("math");
 	ice.math = {};
-	ice.math.version = "v2.0.12"; // This version of the ice.math module
+	ice.math.version = "v2.0.13"; // This version of the ice.math module
 	console.log("%cice.math " + ice.math.version + " imported successfully.", "color: #008000");
 
 	/*
@@ -179,5 +179,8 @@ if(typeof ice === "undefined") ice = {modules: []};
 	}
 	ice.math.binary = function(n, pad = false) {
 		return (pad ? Array(Math.clz32(n) + 1).join("0") : "") + (n >>> 0).toString(2);
+	}
+	ice.math.sigmoid = function(n) {
+		return 1 / (1 + Math.exp(-n));
 	}
 })();

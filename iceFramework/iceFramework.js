@@ -7,7 +7,7 @@
 
 // The ice library
 let {
-	math, physics, colors, debug, graphics, dom, time, audio
+	math, physics, colors, debug, graphics, dom, time, audio, ai
 } = ice;
 
 // Math
@@ -23,7 +23,7 @@ let {
 	randomInt, randomFloat, randomFrom, random, randomGaussian,
 	chance, percentChance, coinFlip,
 	pythag, distSq, dist,
-	map, clamp,
+	map, clamp, sigmoid,
 	isPrime, factors, fibonacci,
 	radToDeg, degToRad, binary
 } = math;
