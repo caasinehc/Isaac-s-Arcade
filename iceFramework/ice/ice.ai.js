@@ -2,7 +2,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 (function() {
 	if(!ice.modules.includes("ai")) ice.modules.push("ai");
 	ice.ai = {};
-	ice.ai.version = "v1.0.1"; // This version of the ice.ai module
+	ice.ai.version = "v1.0.2"; // This version of the ice.ai module
 	console.log("%cice.ai " + ice.ai.version + " imported successfully.", "color: #008000");
 
 	/*
@@ -62,9 +62,10 @@ if(typeof ice === "undefined") ice = {modules: []};
 			totalFitness = 0;
 			minFitness = Infinity;
 			maxFitness = -Infinity;
-			for(let creature of this.creatures) {
-				fitness = fitnessFunction(creature.DNA.genes);
-				creature.fitness = fitness;
+			let isFunction = typeof fitnessFunction === "function";
+			for(let i = 0; i < this.creatures.length; i++) {
+				fitness = isFunction ? fitnessFunction(this.creatures[i].DNA.genes) : fitnessFunction[i];
+				this.creatures[i].fitness = fitness;
 				totalFitness += fitness;
 				if(fitness > maxFitness) maxFitness = fitness;
 				if(fitness < minFitness) minFitness = fitness;
