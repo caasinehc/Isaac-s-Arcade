@@ -19,6 +19,7 @@ let defaultHTML = (
 		<script src="../iceFramework/ice/ice.dom.js"><\/script>
 		<script src="../iceFramework/ice/ice.time.js"><\/script>
 		<script src="../iceFramework/ice/ice.audio.js"><\/script>
+		<script src="../iceFramework/ice/ice.ai.js"><\/script>
 		<script src="https://caasinehc.github.io/ice/src/ice.math.js"><\/script>
 		<script src="https://caasinehc.github.io/ice/src/ice.physics.js"><\/script>
 		<script src="https://caasinehc.github.io/ice/src/ice.colors.js"><\/script>
@@ -27,6 +28,7 @@ let defaultHTML = (
 		<script src="https://caasinehc.github.io/ice/src/ice.dom.js"><\/script>
 		<script src="https://caasinehc.github.io/ice/src/ice.time.js"><\/script>
 		<script src="https://caasinehc.github.io/ice/src/ice.audio.js"><\/script>
+		<script src="https://caasinehc.github.io/ice/src/ice.ai.js"><\/script>
 	</head>
 	<body>
 		<canvas id="canvas" width=800 height=600 style="border: 4px solid black;">
