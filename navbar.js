@@ -4,7 +4,8 @@
 		"Games": {
 			"Don't Touch Red!": "../Don't Touch Red!/Don't Touch Red!.html",
 			"Snakes": "../Snakes/Snakes.html",
-			"Skeet Hero": "../Skeet Hero/Skeet Hero.html"
+			"Skeet Hero": "../Skeet Hero/Skeet Hero.html",
+			"Colorspot": "../Colorspot/Colorspot.html"
 		},
 		"Random": {
 			"Framework Prototyping Sandbox": "../Framework Prototyping Sandbox/Framework Prototyping Sandbox.html"
