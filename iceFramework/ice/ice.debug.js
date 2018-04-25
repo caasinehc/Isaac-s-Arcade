@@ -2,7 +2,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 (function() {
 	if(!ice.modules.includes("debug")) ice.modules.push("debug");
 	ice.debug = {};
-	ice.debug.version = "v2.1.19"; // This version of the ice.debug module
+	ice.debug.version = "v2.1.20"; // This version of the ice.debug module
 	console.log("%cice.debug " + ice.debug.version + " imported successfully.", "color: #008000");
 
 	/*
@@ -257,18 +257,22 @@ if(typeof ice === "undefined") ice = {modules: []};
 			if(typeof code === "string") code = `(function() {${code}})`;
 
 			let blob = new Blob([`onmessage = function() {postMessage(${code}());}`]);
-			let worker = new Worker(URL.createObjectURL(blob));
+			let objectURL = URL.createObjectURL(blob);
+			let worker = new Worker(objectURL);
+			URL.revokeObjectURL(objectURL);
 			let timer = setTimeout(function() {
 				worker.terminate();
 				reject("TIMEOUT");
 			}, abortTime);
 
-			worker.onmessage = function(e) {
+			worker.onmessage = e => {
 				clearTimeout(timer);
 				worker.terminate();
 				resolve(e.data);
 			}
-			worker.onerror = function(e) {
+			worker.onerror = e => {
+				clearTimeout(timer);
+				worker.terminate();
 				reject(e.message);
 			}
 			worker.postMessage("START");

@@ -2,7 +2,7 @@ if(typeof ice === "undefined") ice = {modules: []};
 (function() {
 	if(!ice.modules.includes("math")) ice.modules.push("math");
 	ice.math = {};
-	ice.math.version = "v2.0.13"; // This version of the ice.math module
+	ice.math.version = "v2.0.14"; // This version of the ice.math module
 	console.log("%cice.math " + ice.math.version + " imported successfully.", "color: #008000");
 
 	/*
@@ -182,5 +182,69 @@ if(typeof ice === "undefined") ice = {modules: []};
 	}
 	ice.math.sigmoid = function(n) {
 		return 1 / (1 + Math.exp(-n));
+	}
+
+	// Constructors
+
+	ice.math.PerlinNoise = function() {
+		// Big thanks to Flafla2 for writing this incredibly helpful post on Perlin Noise!
+		// https://flafla2.github.io/2014/08/09/perlinnoise.html
+		let tile = 0;
+		let p = [...Array(256)].map(() => Math.floor(Math.random() * 256));
+		for(let i = 0; i < 256; i++) p[i + 256] = (p[i]);
+
+		function fade(t) {return t * t * t * (t * (t * 6 - 15) + 10);}
+		function lerp(n, a, b) {return a + n * (b - a);}
+		function grad(hash, x, y, z) {
+			switch(hash & 0xF) {
+				case 0x0: return  x + y;
+				case 0x1: return -x + y;
+				case 0x2: return  x - y;
+				case 0x3: return -x - y;
+				case 0x4: return  x + z;
+				case 0x5: return -x + z;
+				case 0x6: return  x - z;
+				case 0x7: return -x - z;
+				case 0x8: return  y + z;
+				case 0x9: return -y + z;
+				case 0xA: return  y - z;
+				case 0xB: return -y - z;
+				case 0xC: return  y + x;
+				case 0xD: return -y + z;
+				case 0xE: return  y - x;
+				case 0xF: return -y - z;
+			}
+		}
+
+		this.noise = function(x = 0, y = 0, z = 0) {
+			let xi = Math.floor(x) % 256;
+			let yi = Math.floor(y) % 256;
+			let zi = Math.floor(z) % 256;
+			let xf = x % 1;
+			let yf = y % 1;
+			let zf = z % 1;
+			let u = fade(xf);
+			let v = fade(yf);
+			let w = fade(zf);
+
+			let aaa = p[p[p[xi    ] + yi    ] + zi    ];
+			let aab = p[p[p[xi    ] + yi    ] + zi + 1];
+			let aba = p[p[p[xi    ] + yi + 1] + zi    ];
+			let abb = p[p[p[xi    ] + yi + 1] + zi + 1];
+			let baa = p[p[p[xi + 1] + yi    ] + zi    ];
+			let bab = p[p[p[xi + 1] + yi    ] + zi + 1];
+			let bba = p[p[p[xi + 1] + yi + 1] + zi    ];
+			let bbb = p[p[p[xi + 1] + yi + 1] + zi + 1];
+
+			let x1, y1, x2, y2;
+			x1 = lerp(u, grad(aaa, xf, yf, zf), grad(baa, xf - 1, yf, zf));
+			x2 = lerp(u, grad(aba, xf, yf - 1, zf), grad(bba, xf - 1, yf - 1, zf));
+			y1 = lerp(v, x1, x2);
+			x1 = lerp(u, grad(aab, xf, yf, zf - 1), grad(bab, xf - 1, yf, zf - 1));
+			x2 = lerp(u, grad(abb, xf, yf - 1, zf - 1), grad(bbb, xf - 1, yf - 1, zf - 1));
+			y2 = lerp(v, x1, x2);
+
+			return(lerp(w, y1, y2) + 1) / 2;
+		}
 	}
 })();

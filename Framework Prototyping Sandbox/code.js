@@ -9,26 +9,25 @@ let codeOn = "JS";
 let defaultHTML = (
 `<html>
 	<head>
+		<title></title>
 		<meta charset="utf-8" />
-
-		<script src="../iceFramework/ice/ice.math.js"><\/script>
-		<script src="../iceFramework/ice/ice.physics.js"><\/script>
-		<script src="../iceFramework/ice/ice.colors.js"><\/script>
-		<script src="../iceFramework/ice/ice.debug.js"><\/script>
-		<script src="../iceFramework/ice/ice.graphics.js"><\/script>
-		<script src="../iceFramework/ice/ice.dom.js"><\/script>
-		<script src="../iceFramework/ice/ice.time.js"><\/script>
-		<script src="../iceFramework/ice/ice.audio.js"><\/script>
-		<script src="../iceFramework/ice/ice.ai.js"><\/script>
-		<script src="https://caasinehc.github.io/ice/src/ice.math.js"><\/script>
-		<script src="https://caasinehc.github.io/ice/src/ice.physics.js"><\/script>
-		<script src="https://caasinehc.github.io/ice/src/ice.colors.js"><\/script>
-		<script src="https://caasinehc.github.io/ice/src/ice.debug.js"><\/script>
-		<script src="https://caasinehc.github.io/ice/src/ice.graphics.js"><\/script>
-		<script src="https://caasinehc.github.io/ice/src/ice.dom.js"><\/script>
-		<script src="https://caasinehc.github.io/ice/src/ice.time.js"><\/script>
-		<script src="https://caasinehc.github.io/ice/src/ice.audio.js"><\/script>
-		<script src="https://caasinehc.github.io/ice/src/ice.ai.js"><\/script>
+		<script src="iceFramework/ice/ice.math.js"></script>
+		<script src="iceFramework/ice/ice.physics.js"></script>
+		<script src="iceFramework/ice/ice.colors.js"></script>
+		<script src="iceFramework/ice/ice.debug.js"></script>
+		<script src="iceFramework/ice/ice.graphics.js"></script>
+		<script src="iceFramework/ice/ice.dom.js"></script>
+		<script src="iceFramework/ice/ice.time.js"></script>
+		<script src="iceFramework/ice/ice.audio.js"></script>
+		<script src="iceFramework/ice/ice.ai.js"></script>
+		<script src="https://caasinehc.github.io/ice/src/ice.math.js"></script>
+		<script src="https://caasinehc.github.io/ice/src/ice.physics.js"></script>
+		<script src="https://caasinehc.github.io/ice/src/ice.colors.js"></script>
+		<script src="https://caasinehc.github.io/ice/src/ice.debug.js"></script>
+		<script src="https://caasinehc.github.io/ice/src/ice.graphics.js"></script>
+		<script src="https://caasinehc.github.io/ice/src/ice.dom.js"></script>
+		<script src="https://caasinehc.github.io/ice/src/ice.time.js"></script>
+		<script src="https://caasinehc.github.io/ice/src/ice.ai.js"></script>
 	</head>
 	<body>
 		<canvas id="canvas" width=800 height=600 style="border: 4px solid black;">
@@ -37,7 +36,8 @@ let defaultHTML = (
 			<a href="https://www.google.com/chrome/" target="_blank">Google Chrome</a>
 		</canvas>
 
-		<script src="../iceFramework/iceFramework.js"><\/script>
+		<script src="iceFramework/iceFramework.js"></script>
+		<script src="code.js"></script>
 	</body>
 </html>`
 );
