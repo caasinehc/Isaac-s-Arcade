@@ -25,7 +25,8 @@ let {
 	pythag, distSq, dist,
 	map, clamp, sigmoid,
 	isPrime, factors, fibonacci,
-	radToDeg, degToRad, binary
+	radToDeg, degToRad, binary,
+	PerlinNoise
 } = math;
 
 // Physics
@@ -73,6 +74,7 @@ function resize(w, h) {
 // The input listeners
 function keyDown(e, key) {};
 function keyUp(e, key) {};
+let isDown;
 (() => {
 	let listener = new dom.InputListener(document.documentElement);
 	isDown = listener.isDown;
@@ -111,6 +113,8 @@ dom.showMenu(canvas, false);
 // The clock
 function tick() {};
 function render() {};
+let frameRate, setFrameRate, loop, noLoop,
+	fps, mspf, dt, frameCount, fpsHistory;
 (() => {
 	let clock = new time.Clock();
 	frameRate = clock.tickRate;
@@ -121,6 +125,7 @@ function render() {};
 	}
 	loop = () => clock.loop(true);
 	noLoop = () => clock.loop(false);
+	frameCount = 0;
 	clock.tick = function() {
 		fps = clock.tps;
 		mspf = clock.mspt;
