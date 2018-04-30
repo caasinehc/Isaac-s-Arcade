@@ -133,8 +133,8 @@ function updateCode() {
 	else if(codeOn === "JS") {
 		js = codeInput.value;
 	}
-	save();
 	compile();
+	setTimeout(save, 100); // If an infinite loop starts, this *usually* helps prevent saving it
 }
 
 codeInput.style.fontSize = fontSize + "px";
