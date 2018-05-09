@@ -153,12 +153,12 @@ codeInput.onkeydown = function(e) {
 	let before = val.substring(0, start);
 	let after = val.substring(end);
 
-	if (key === "Tab") {
+	if(key === "Tab") {
 		e.preventDefault();
 		this.value = before + "\t" + after;
 		this.selectionStart = this.selectionEnd = start + 1;
 	}
-	if (ctrl) {
+	if(ctrl) {
 		let lines = {};
 		lines.start = val.lastIndexOf("\n", start - 1) + 1;
 		lines.end = val.indexOf("\n", end);
@@ -174,36 +174,36 @@ codeInput.onkeydown = function(e) {
 		lines.list.start = lines.list.before.length - 1;
 		lines.list.end = lines.list.start + lines.list.val.length - 1;
 
-		if (key === "/") {
+		if(key === "/") {
 			e.preventDefault();
 			let commentAll = false;
 
-			for (let line of lines.list.val) {
-				if (!line.trim().startsWith("//")) {
+			for(let line of lines.list.val) {
+				if(!line.trim().startsWith("//")) {
 					commentAll = true;
 					break;
 				}
 			}
 			let newStart = start;
 			let newEnd = end;
-			for (let i = 0; i < lines.list.val.length; i++) {
+			for(let i = 0; i < lines.list.val.length; i++) {
 				let line = lines.list.val[i];
 				lines.list.val[i] = line.replace(commentAll ? /(\t*)(.*)/ :
 					/(\t*)\/\/ ?(.*)/, commentAll ? "$1// $2" : "$1$2");
 				newEnd += lines.list.val[i].length - line.length;
-				if (i === 0) newStart += lines.list.val[i].length - line.length;
+				if(i === 0) newStart += lines.list.val[i].length - line.length;
 			}
 			this.value = lines.before + lines.list.val.join("\n") + lines.after;
 			this.selectionStart = newStart;
 			this.selectionEnd = newEnd;
 			updateCode();
-		} else if (key === "l" && ctrl) {
+		} else if(key === "l" && ctrl) {
 			e.preventDefault();
 			this.selectionStart = Math.max(lines.start - 1, 0);
 			this.selectionEnd = lines.end;
-		} else if (key === "ArrowUp") {
+		} else if(key === "ArrowUp") {
 			e.preventDefault();
-			if (lines.list.start === 0) return;
+			if(lines.list.start === 0) return;
 
 			let prevLineStart = lines.start - lines.list.all[lines.list.start - 1].length;
 			let prevLineEnd = lines.start - 1;
@@ -217,9 +217,9 @@ codeInput.onkeydown = function(e) {
 			this.selectionStart = start - (prevLineEnd - prevLineStart) - 2;
 			this.selectionEnd = end - (prevLineEnd - prevLineStart) - 2;
 			updateCode();
-		} else if (key === "ArrowDown") {
+		} else if(key === "ArrowDown") {
 			e.preventDefault();
-			if (lines.list.end === lines.list.all.length - 1) return;
+			if(lines.list.end === lines.list.all.length - 1) return;
 
 			let nextLineLength = lines.list.all[lines.list.end + 1].length;
 			let nextLineStart = lines.end + 1;
