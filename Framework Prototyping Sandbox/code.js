@@ -7,7 +7,7 @@ let frameHtmlTag = frameDocument.getElementsByTagName("html")[0];
 
 let codeOn = "JS";
 let defaultHTML = (
-	`<html>
+`<html>
 	<head>
 		<title></title>
 		<meta charset="utf-8" />
@@ -42,7 +42,7 @@ let defaultHTML = (
 </html>`
 );
 let defaultJS = (
-	`function tick() {
+`function tick() {
 	// tick
 }
 function render() {
