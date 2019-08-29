@@ -5,6 +5,26 @@
 	display: flex;
 }
 
+#files {
+	background: #101010;
+	
+	width: 200px;
+}
+
+.filesHeader {
+	margin: 8px;
+	margin-top: 16px;
+	margin-bottom: 0px;
+	color: #C0C0C0;
+}
+
+.filesFile {
+	margin: 0px;
+	margin-left: 24px;
+	color: #808080;
+	cursor: pointer;
+}
+
 #editor {
 	flex: 1 1 auto;
 	box-sizing: border-box;
