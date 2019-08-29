@@ -134,11 +134,11 @@ document.addEventListener("mousemove", function(e) {
 	if(isResizerDragging) {
 		// big ass motherfucking thank you to this guy for preventing a murder-suicide
 		// https://stackoverflow.com/a/46934825
-		let containerOffsetLeft = elems.icebox.offsetLeft + elems.files.offsetWidth;
+		let containerOffsetLeft = elems.icebox.offsetLeft + elems.files.main.offsetWidth;
 		let pointerRelativeXpos = e.clientX - containerOffsetLeft;
 		
 		let minWidth = 100;
-		let newWidth = (Math.min(Math.max(minWidth, pointerRelativeXpos - 8), elems.icebox.clientWidth - elems.files.offsetWidth - minWidth));
+		let newWidth = (Math.min(Math.max(minWidth, pointerRelativeXpos - 8), elems.icebox.clientWidth - elems.files.main.offsetWidth - minWidth));
 		elems.editor.style.width = newWidth + "px";
 		elems.editor.style.flexGrow = 0;
 		
