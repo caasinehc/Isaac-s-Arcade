@@ -1,0 +1,29 @@
+#icebox {
+	width: 100%;
+	height: 800px;
+	
+	display: flex;
+}
+
+#editor {
+	flex: 1 1 auto;
+	box-sizing: border-box;
+}
+
+#resizer {
+	width: 8px;
+	height: 100%;
+	
+	cursor: ew-resize;
+	background-color: #202020;
+	
+	box-sizing: border-box;
+}
+
+#frame {
+	border: 4px inset;
+	background: #FFFFFF;
+	
+	flex: 1 1 auto;
+	box-sizing: border-box;
+}
