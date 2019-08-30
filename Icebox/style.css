@@ -7,6 +7,8 @@
 
 #files {
 	background: #101010;
+	user-select: none;
+	overflow: auto;
 	
 	width: 200px;
 }
@@ -15,6 +17,16 @@
 	margin: 8px;
 	margin-top: 16px;
 	margin-bottom: 0px;
+	display: inline-block;
+	color: #C0C0C0;
+}
+
+.filesAdd {
+	margin: 8px;
+	margin-top: 16px;
+	margin-bottom: 0px;
+	display: inline-block;
+	float: right;
 	color: #C0C0C0;
 }
 

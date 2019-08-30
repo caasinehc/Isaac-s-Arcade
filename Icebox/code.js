@@ -25,22 +25,45 @@ elems.files.js          = {};
 elems.files.js.div      = document.getElementById("filesJS");
 elems.files.js.header   = elems.files.js.div.children[0];
 elems.files.js.files    = [];
+elems.files.lib         = {};
+elems.files.lib.div     = document.getElementById("filesLIB");
+elems.files.lib.header  = elems.files.lib.div.children[0];
+elems.files.lib.files   = [];
 
 // Island of misfit variables
 let isRisizerDragging;
 
 // Project class
 function Project() {
+	function getUnusedName(prefix, list) {
+		for(let i = 1; i < Infinity; i++) {
+			let taken = false;
+			for(let file of list) {
+				if(file.name === (prefix + " " + i)) {
+					taken = true;
+					continue;
+				}
+			}
+			if(!taken) return prefix + " " + i;
+		}
+	}
+	
 	// File class (private to the Project class)
 	function File(name, type, project) {
 		this.name = name;
 		this.type = type;
 		this.session;
 		this.elem;
+		this.aceType = ({
+			"html": "html",
+			"css": "css",
+			"js": "javascript",
+			"lib": "text"
+		})[this.type];
 		
 		// Initialize session
 		this.session = new ace.EditSession("");
-		this.session.setMode("ace/mode/" + this.type);
+		this.session.setMode("ace/mode/" + this.aceType);
 		this.session.on("change", function() {
 			compile(project);
 		})
@@ -53,9 +76,7 @@ function Project() {
 		this.elem.onclick = () => {
 			switchToFile(this);
 		}
-		     if(this.type === "html")       elems.files.html.div.appendChild(this.elem);
-		else if(this.type === "css")        elems.files.css.div.appendChild(this.elem);
-		else if(this.type === "javascript") elems.files.js.div.appendChild(this.elem);
+		elems.files[this.type].div.appendChild(this.elem);
 		
 		this.getText = function() {
 			return this.session.getValue();
@@ -73,13 +94,30 @@ function Project() {
 			new File("style", "css", this)
 		],
 		js: [
-			new File("code", "javascript", this)
+			new File("code", "js", this)
+		],
+		lib: [
+			new File("ice", "lib", this)
 		]
 	};
 	
+	this.addCSS = function() {
+		let name = getUnusedName("style ", this.files.css);
+		this.files.css.push(new File(name, "css", this));
+	}
+	
+	this.addJS = function() {
+		let name = getUnusedName("script ", this.files.js);
+		this.files.js.push(new File(name, "js", this));
+	}
+	
+	this.addLIB = function() {
+		let name = getUnusedName("library ", this.files.lib);
+		this.files.lib.push(new File(name, "lib", this));
+	}
+	
 	// Combines the HTML, css, and js into one html string
 	// TODO Allow retrieving libraries from the web (ex: https://caasinehc.github.io/ice/src/ice.js)
-	// TODO Potentially breaks when js/css code contains strings like "</script>"
 	this.toCombinedHTML = function() {
 		function indent(text) {
 			return "\t" + text.split("\n").join("\n\t");
@@ -87,22 +125,39 @@ function Project() {
 		function removeLastChar(text) {
 			return text.substring(0, text.length - 1);
 		}
+		function escapeStyleTag(str) {
+			return str.replace(/<\/style>/g, "<\\u002fstyle>")
+		}
+		function escapeScriptTag(str) {
+			return str.replace(/<\/script>/g, '<\\u002fscript>')
+		}
 		
 		// css files to style tags
 		let styles = "";
 		for(let css of this.files.css) {
-			styles += (`<style>\n${indent(css.getText())}\n</style>\n`);
+			styles += (`<style>\n${indent(escapeStyleTag(css.getText()))}\n</style>\n`);
 		}
 		styles = removeLastChar(styles);
+		
+		// libs to script tags
+		let libs = "";
+		for(let lib of this.files.lib) {
+			libs += `<script src=\"${lib.getText()}\"></script>\n`;
+		}
+		libs = removeLastChar(libs);
 		
 		// js files to script tags
 		let scripts = "";
 		for(let js of this.files.js) {
-			scripts += `<script>\n${indent(js.getText())}\n</script>\n`;
+			scripts += `<script>\n${indent(escapeScriptTag(js.getText()))}\n</script>\n`;
 		}
 		scripts = removeLastChar(scripts);
 		
-		return `<DOCTYPE html>\n<html>\n${indent(`${this.files.html.getText()}\n${styles}\n${scripts}`)}\n</html>`;
+		let combinedHTML = "<DOCTYPE html>\n<html>\n";
+		combinedHTML += indent(`${this.files.html.getText()}\n${styles}\n${libs}\n${scripts}`);
+		combinedHTML += "\n</html>";
+		
+		return combinedHTML;
 	}
 	
 	// TODO
@@ -116,7 +171,7 @@ function Project() {
 // Expects a file from a project object (I'm Dr. Seuss apparently)
 function switchToFile(file) {
 	aceEditor.setSession(file.session);
-	aceEditor.session.setMode(`ace/mode/${file.type}`);
+	aceEditor.session.setMode(`ace/mode/${file.aceType}`);
 }
 
 // Resizer code
@@ -187,7 +242,11 @@ let defaultCSS = (
 let defaultJS = (
 `// Javascript code here!`
 );
+let defaultLIB = (
+`https://rebrand.ly/ice`
+);
 project.files.html.setText(defaultHTML);
 project.files.css[0].setText(defaultCSS);
 project.files.js[0].setText(defaultJS);
+project.files.lib[0].setText(defaultLIB);
 switchToFile(project.files.html);

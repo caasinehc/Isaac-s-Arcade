@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>Isaac's Arcade - Framework Prototyping Sandbox</title>
+		<title>Isaac's Arcade - Icebox</title>
 		
 		<script src="https://pagecdn.io/lib/ace/1.4.5/ace.js" integrity="sha256-5Xkhn3k/1rbXB+Q/DX/2RuAtaB4dRRyQvMs83prFjpM=" crossorigin="anonymous"></script>
 		
@@ -19,11 +19,17 @@
 				<div id="filesHTML">
 					<p class="filesHeader">HTML</p>
 				</div>
-				<div id="filesCSS">
-					<p class="filesHeader">CSS</p>
-				</div>
 				<div id="filesJS">
 					<p class="filesHeader">JS</p>
+					<p class="filesAdd" onclick="project.addJS();">+</p>
+				</div>
+				<div id="filesCSS">
+					<p class="filesHeader">CSS</p>
+					<p class="filesAdd" onclick="project.addCSS();">+</p>
+				</div>
+				<div id="filesLIB">
+					<p class="filesHeader">LIB</p>
+					<p class="filesAdd" onclick="project.addLIB();">+</p>
 				</div>
 			</div>
 			<div id="editor"></div>
