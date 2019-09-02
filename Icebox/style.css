@@ -35,6 +35,13 @@
 	margin-left: 24px;
 	color: #808080;
 	cursor: pointer;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.filesFileEditing {
+	color: #000000;
+	background-color: #FFFFFF;
 }
 
 #editor {

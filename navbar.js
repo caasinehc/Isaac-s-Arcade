@@ -8,7 +8,7 @@
 			"Colorspot": "../Colorspot/Colorspot.html"
 		},
 		"Random": {
-			"Framework Prototyping Sandbox": "../Framework Prototyping Sandbox/Framework Prototyping Sandbox.html"
+			"Icebox": "../Icebox/Icebox.html"
 		},
 		"Old Projects": {
 			"Isaac's Arcade (old)": "../Old site/index.html"
@@ -42,6 +42,11 @@
 	let style = document.createElement("style");
 	style.type = "text/css";
 	style.innerHTML = (
+		// NAVBAR CONTAINING DIV
+		".navbar {\n" +
+		"	position: relative;\n" +
+		"	z-index: 5;\n" + // Above the gutter in Icebox
+		"}\n" +
 		// NAVBAR
 		".navbar ul {\n" +
 		"	list-style-type: none;\n" + // no bullets
