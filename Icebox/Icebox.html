@@ -14,22 +14,44 @@
 		<script>let page = "Icebox";</script>
 		<script src="../navbar.js"></script>
 
+		<div id="popup">
+			<div id="popupBackground" onclick="hidePopup();"></div>
+			<div id="popupContent">
+				<div id="popupHeader">
+					<span id="popupHeaderText">Manage projects</span>
+					<div id="popupHeaderBtns">
+						<span class="popupHeaderBtn" onclick="popupButton('edit');">✎</span>
+						<span class="popupHeaderBtn" onclick="popupButton('add');">+</span>
+						<span class="popupHeaderBtn" onclick="popupButton('up');">↑</span>
+						<span class="popupHeaderBtn" onclick="popupButton('down');">↓</span>
+						<span class="popupHeaderBtn" onclick="popupButton('rename');">ⵊ</span>
+						<span class="popupHeaderBtn" onclick="popupButton('delete');">✖</span>
+						<span class="popupHeaderBtn" onclick="popupButton('save');">🖫</span>
+						<span class="popupHeaderBtn" onclick="popupButton('upload');">⇪</span>
+					</div>
+				</div>
+				<div id="popupList"></div>
+			</div>
+		</div>
 		<div id="icebox">
 			<div id="files">
+				<div id="filesProject">
+					<p class="filesProjectHeader" onclick="showPopup();">PROJECT</p>
+				</div>
 				<div id="filesHTML">
 					<p class="filesHeader">HTML</p>
 				</div>
 				<div id="filesJS">
 					<p class="filesHeader">JS</p>
-					<p class="filesAdd" onclick="project.addJS();">+</p>
+					<p class="filesAdd" onclick="project.addJS(true);">+</p>
 				</div>
 				<div id="filesCSS">
 					<p class="filesHeader">CSS</p>
-					<p class="filesAdd" onclick="project.addCSS();">+</p>
+					<p class="filesAdd" onclick="project.addCSS(true);">+</p>
 				</div>
 				<div id="filesLIB">
 					<p class="filesHeader">LIB</p>
-					<p class="filesAdd" onclick="project.addLIB();">+</p>
+					<p class="filesAdd" onclick="project.addLIB(true);">+</p>
 				</div>
 			</div>
 			<div id="editor"></div>

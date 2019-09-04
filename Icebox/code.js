@@ -7,6 +7,11 @@ aceEditor.session.setMode("ace/mode/javascript");
 
 // Elements on the page
 let elems = {};
+elems.popup             = {};
+elems.popup.main        = document.getElementById("popup");
+elems.popup.background  = document.getElementById("popupBackground");
+elems.popup.content     = document.getElementById("popupContent");
+elems.popup.list        = document.getElementById("popupList");
 elems.icebox            = document.getElementById("icebox");
 elems.editor            = document.getElementById("editor");
 elems.resizer           = document.getElementById("resizer");
@@ -32,9 +37,14 @@ elems.files.lib.files   = [];
 
 // Island of misfit variables
 let isRisizerDragging;
+let readyToSaveToLS = false;
+let selectedIndex = 0;
 
 // Project
 let project;
+let projectIndex;
+let projects;
+let defaultProjectStr = "Icebox Project{\"name\":\"New project\",\"lastModified\":1567381492691,\"files\":{\"html\":\"{\\\"name\\\":\\\"index\\\",\\\"lastModified\\\":1567381492691,\\\"data\\\":\\\"<body>\\\\r\\\\n\\\\t<h1>This is my webpage.</h1>\\\\r\\\\n</body>\\\"}\",\"css\":[\"{\\\"name\\\":\\\"style\\\",\\\"lastModified\\\":1567381492694,\\\"data\\\":\\\"body {\\\\r\\\\n\\\\tbackground-color: gray;\\\\r\\\\n\\\\tfont-family: \\\\\\\"Arial\\\\\\\";\\\\r\\\\n}\\\"}\"],\"js\":[\"{\\\"name\\\":\\\"code\\\",\\\"lastModified\\\":1567381492695,\\\"data\\\":\\\"function init() {\\\\n    // Init\\\\n}\\\\nif(typeof ice !== \\\\\\\"undefined\\\\\\\" && ice.meta.framework.initialized) init();\\\\n\\\\nfunction tick() {\\\\n    // Tick\\\\n}\\\\n\\\\nfunction render() {\\\\n    // Render\\\\n}\\\"}\"],\"lib\":[\"{\\\"name\\\":\\\"ice\\\",\\\"lastModified\\\":1567381492696,\\\"data\\\":\\\"https://rebrand.ly/ice\\\"}\",\"{\\\"name\\\":\\\"ice.framework\\\",\\\"lastModified\\\":1567382816000,\\\"data\\\":\\\"https://rebrand.ly/ice-fw\\\"}\"]}}sha256:07b9b9b6f702fc6b358c191b3a8f5ad299eea3a27257f0c0a2cd1c23eee88c9a";
 
 // sha256
 function sha256(ascii, binary = false) {
@@ -138,10 +148,12 @@ function Project() {
 	function getUnusedName(prefix, list) {
 		for(let i = 1; i < Infinity; i++) {
 			let taken = false;
-			for(let file of list) {
-				if(file.name === (prefix + " " + i)) {
-					taken = true;
-					continue;
+			if(typeof list === "Array") {
+				for(let file of list) {
+					if(file.name === (prefix + " " + i)) {
+						taken = true;
+						continue;
+					}
 				}
 			}
 			if(!taken) return prefix + " " + i;
@@ -171,32 +183,44 @@ function Project() {
 		this.session.setMode("ace/mode/" + this.aceType);
 		this.session.on("change", function() {
 			compile(project);
+			saveProjectsToLS();
 		})
 		
-		// Create the p elem representing this file
-		this.elem = document.createElement("p");
-		let textNode = document.createTextNode(this.name);
-		this.elem.appendChild(textNode);
-		this.elem.classList.add("filesFile");
-		this.elem.onclick = () => {
-			switchToFile(this);
-		}
-		this.elem.ondblclick = () => {
-			this.elem.classList.add("filesFileEditing");
-			this.elem.contentEditable = true;
-			this.elem.focus();
-		}
-		this.elem.onblur = () => {
-			this.elem.classList.remove("filesFileEditing");
-			this.elem.contentEditable = false;
-			this.name = this.elem.innerText;
-		}
-		this.elem.onkeydown = (e) => {
-			if(e.key === "Enter") {
-				this.elem.blur();
+		this.generateElem = function() {
+			// Create the p elem representing this file
+			this.elem = document.createElement("p");
+			let textNode = document.createTextNode(this.name);
+			this.elem.appendChild(textNode);
+			this.elem.classList.add("filesFile");
+			this.elem.onclick = () => {
+				switchToFile(this);
+			}
+			this.elem.ondblclick = () => {
+				this.elem.classList.add("filesFileEditing");
+				this.elem.contentEditable = true;
+				this.elem.focus();
+			}
+			this.elem.onblur = () => {
+				this.elem.classList.remove("filesFileEditing");
+				this.elem.contentEditable = false;
+				this.name = this.elem.innerText;
+				saveProjectsToLS();
+			}
+			this.elem.onkeydown = (e) => {
+				if(e.key === "Enter") {
+					this.elem.blur();
+				}
 			}
 		}
-		elems.files[this.type].div.appendChild(this.elem);
+		this.generateElem();
+		
+		this.appendElem = function() {
+			elems.files[this.type].div.appendChild(this.elem);
+		}
+		
+		this.removeElem = function() {
+			this.elem.remove();
+		}
 		
 		this.setText = function(text) {
 			return this.session.setValue(text);
@@ -224,7 +248,7 @@ function Project() {
 		}
 	}
 	
-	this.name = "";
+	this.name = getUnusedName("Project ", projects);
 	this.lastModified = new Date().getTime();
 	this.files = {
 		html: new File("index", "html", this),
@@ -233,19 +257,25 @@ function Project() {
 		lib: []
 	};
 	
-	this.addCSS = function() {
+	this.addCSS = function(appendElem) {
 		let name = getUnusedName("style ", this.files.css);
-		this.files.css.push(new File(name, "css", this));
+		let newFile = new File(name, "css", this);
+		if(appendElem) newFile.appendElem();
+		this.files.css.push(newFile);
 	}
 	
-	this.addJS = function() {
+	this.addJS = function(appendElem) {
 		let name = getUnusedName("script ", this.files.js);
-		this.files.js.push(new File(name, "js", this));
+		let newFile = new File(name, "js", this);
+		if(appendElem) newFile.appendElem();
+		this.files.js.push(newFile);
 	}
 	
-	this.addLIB = function() {
+	this.addLIB = function(appendElem) {
 		let name = getUnusedName("library ", this.files.lib);
-		this.files.lib.push(new File(name, "lib", this));
+		let newFile = new File(name, "lib", this);
+		if(appendElem) newFile.appendElem();
+		this.files.lib.push(newFile);
 	}
 	
 	// Combines the HTML, css, and js into one html string
@@ -292,11 +322,18 @@ function Project() {
 		return combinedHTML;
 	}
 	
+	this.appendElems = function() {
+		this.files.html.appendElem();
+		for(let file of this.files.css) file.appendElem();
+		for(let file of this.files.js)  file.appendElem();
+		for(let file of this.files.lib) file.appendElem();
+	}
+	
 	this.removeElems = function() {
-		this.files.html.elem.remove();
-		for(let file of this.files.css) file.elem.remove();
-		for(let file of this.files.js)  file.elem.remove();
-		for(let file of this.files.lib) file.elem.remove();
+		this.files.html.removeElem();
+		for(let file of this.files.css) file.removeElem();
+		for(let file of this.files.js)  file.removeElem();
+		for(let file of this.files.lib) file.removeElem();
 	}
 	
 	this.toString = function() {
@@ -324,7 +361,7 @@ function Project() {
 	}
 }
 
-Project.fromString = function(str) {
+Project.fromString = function(str) {	
 	let projectStr = str.substr(14, str.length - 85);
 	let hash = str.substr(str.length - 64, 64);
 	
@@ -340,20 +377,18 @@ Project.fromString = function(str) {
 	newProjectData.files.js   = newProjectData.files.js.map(JSON.parse);
 	newProjectData.files.lib  = newProjectData.files.lib.map(JSON.parse);
 	
-	console.log(newProjectData);
-	
 	// Build the project
 	let newProject = new Project();
 	newProject.name = newProjectData.name;
 	newProject.lastModified = newProjectData.lastModified;
 	
-	newProject.files.html.name = newProjectData.files.html.name;
+	newProject.files.html.setName(newProjectData.files.html.name);
 	newProject.files.html.lastModified = newProjectData.files.html.lastModified;
 	newProject.files.html.setText(newProjectData.files.html.data);
 	
 	for(let i = 0; i < newProjectData.files.css.length; i++) {
 		let data = newProjectData.files.css[i];
-		newProject.addCSS();
+		newProject.addCSS(false);
 		newProject.files.css[i].setName(data.name);
 		newProject.files.css[i].lastModified = data.lastModified;
 		newProject.files.css[i].setText(data.data);
@@ -361,7 +396,7 @@ Project.fromString = function(str) {
 	
 	for(let i = 0; i < newProjectData.files.js.length; i++) {
 		let data = newProjectData.files.js[i];
-		newProject.addJS();
+		newProject.addJS(false);
 		newProject.files.js[i].setName(data.name);
 		newProject.files.js[i].lastModified = data.lastModified;
 		newProject.files.js[i].setText(data.data);
@@ -369,7 +404,7 @@ Project.fromString = function(str) {
 	
 	for(let i = 0; i < newProjectData.files.lib.length; i++) {
 		let data = newProjectData.files.lib[i];
-		newProject.addLIB();
+		newProject.addLIB(false);
 		newProject.files.lib[i].setName(data.name);
 		newProject.files.lib[i].lastModified = data.lastModified;
 		newProject.files.lib[i].setText(data.data);
@@ -438,13 +473,169 @@ function compile(project) {
 	setFrameCode(project.toCombinedHTML());
 }
 
-function loadProject(projectStr) {
+function loadProject(newProject) {
 	project.removeElems();
-	project = Project.fromString(projectStr);
+	project = newProject;
+	project.appendElems();
 	switchToFile(project.files.html);
+	compile(project);
 }
 
-// TODO TEMP
-project = new Project();
-let defaultProject = "Icebox Project{\"name\":\"\",\"lastModified\":1567381492691,\"files\":{\"html\":\"{\\\"name\\\":\\\"index\\\",\\\"lastModified\\\":1567381492691,\\\"data\\\":\\\"<body>\\\\r\\\\n\\\\t<h1>This is my webpage.</h1>\\\\r\\\\n</body>\\\"}\",\"css\":[\"{\\\"name\\\":\\\"style\\\",\\\"lastModified\\\":1567381492694,\\\"data\\\":\\\"body {\\\\r\\\\n\\\\tbackground-color: gray;\\\\r\\\\n\\\\tfont-family: \\\\\\\"Arial\\\\\\\";\\\\r\\\\n}\\\"}\"],\"js\":[\"{\\\"name\\\":\\\"code\\\",\\\"lastModified\\\":1567381492695,\\\"data\\\":\\\"function init() {\\\\n    // Init\\\\n}\\\\nif(typeof ice !== \\\\\\\"undefined\\\\\\\" && ice.meta.framework.initialized) init();\\\\n\\\\nfunction tick() {\\\\n    // Tick\\\\n}\\\\n\\\\nfunction render() {\\\\n    // Render\\\\n}\\\"}\"],\"lib\":[\"{\\\"name\\\":\\\"ice\\\",\\\"lastModified\\\":1567381492696,\\\"data\\\":\\\"https://rebrand.ly/ice\\\"}\",\"{\\\"name\\\":\\\"ice.framework\\\",\\\"lastModified\\\":1567382816000,\\\"data\\\":\\\"https://rebrand.ly/ice-fw\\\"}\"]}}sha256:1e52d3532212e9560b4143e6072631e9da9241f426276b1248c5339024e35365";
-loadProject(defaultProject);
+function switchToProject(index) {
+	// TODO don't fail silently, give an error
+	if(index < projects.length) {
+		projectIndex = index;
+		loadProject(projects[projectIndex]);
+		saveProjectsToLS();
+	}
+}
+
+function showPopup() {
+	elems.popup.main.style.display = "block";
+}
+
+function hidePopup() {
+	elems.popup.main.style.display = "none";
+}
+
+function generateProjectList() {
+	let children = elems.popup.list.children;
+	for(let i = children.length - 1; i >= 0; i--) {
+		children[i].remove();
+	}
+	for(let i = 0; i < projects.length; i++) {
+		let pElem = document.createElement("p");
+		let textNode = document.createTextNode(projects[i].name);
+		pElem.appendChild(textNode);
+		pElem.onclick = function() {
+			projectElemClicked(this, i);
+		}
+		pElem.classList.add("popupListElem");
+		if(i === 0) pElem.classList.add("selected"); // TODO select the one we are currently editing
+		elems.popup.list.appendChild(pElem);
+	}
+}
+
+// Manage projects (from/to localstorage, etc...)
+function loadProjectsFromLS() {
+	let lsProjects = localStorage.getItem("Icebox.projects");
+	let lsProjectIndex = localStorage.getItem("Icebox.projectIndex");
+	
+	// If there are no previously saved projects
+	if(lsProjects === null) {
+		project = Project.fromString(defaultProjectStr);
+		projects = [project];
+		projectIndex = 0;
+	}
+	// If there are previously saved projects
+	else {
+		// Load them into the projects var
+		projects = JSON.parse(lsProjects);
+		for(let i = 0; i < projects.length; i++) {
+			projects[i] = Project.fromString(projects[i]);
+		}
+		
+		// Set our project variables
+		projectIndex = lsProjectIndex !== null ? JSON.parse(lsProjectIndex) : 0;
+		project = projects[projectIndex];
+	}
+	switchToProject(projectIndex);
+	readyToSaveToLS = true;
+}
+
+function addProject() {
+	projects.push(Project.fromString(defaultProjectStr));
+	generateProjectList();
+}
+
+function projectElemClicked(projectElem, index) {
+	let projectElems = elems.popup.list.children;
+	for(let i = projectElems.length - 1; i >= 0; i--) {
+		projectElems[i].classList.remove("selected");
+	}
+	
+	projectElem.classList.add("selected");
+	selectedIndex = index;
+}
+
+function popupButton(cmd) {
+	let selected = document.getElementsByClassName("selected")[0];
+	let selectedProject = projects[selectedIndex];
+	
+	if(cmd === "add") {
+		addProject();
+		selectedIndex = projects.length - 1;
+	}
+	if(cmd === "edit") {
+		switchToProject(selectedIndex);
+		hidePopup();
+	}
+	else if(cmd === "rename") {
+		selected.onblur = function() {
+			this.onblur = undefined;
+			this.onkeydown = undefined;
+			selectedProject.name = selected.innerText;
+			saveProjectsToLS();
+			generateProjectList();
+			selectListElem(selectedIndex);
+		}
+		selected.onkeydown = function(e) {
+			if(e.key === "Enter") {
+				this.onblur();
+			}
+		}
+		selected.contentEditable = true;
+		selected.focus();
+		document.execCommand("selectAll", false, null)
+		// TODO save selected element
+	}
+	else if(cmd === "delete") {
+		let confirmString = `Do you really want to PERMANENTLY DELETE the project "${selectedProject.name}"? There's no going back!\n\nPlease type the project name to confirm.`;
+		if(prompt(confirmString) === selectedProject.name) {
+			projects.splice(selectedIndex, 1);
+			selectedIndex--;
+			saveProjectsToLS();
+			generateProjectList();
+		}
+	}
+	else if(cmd === "up") {
+		if(selectedIndex < projects.length && selectedIndex > 0) {
+			let temp = projects[selectedIndex];
+			projects[selectedIndex] = projects[selectedIndex - 1];
+			projects[selectedIndex - 1] = temp;
+			selectedIndex--;
+			saveProjectsToLS();
+			generateProjectList();
+		}
+	}
+	else if(cmd === "down") {
+		if(selectedIndex < projects.length - 1) {
+			let temp = projects[selectedIndex];
+			projects[selectedIndex] = projects[selectedIndex + 1];
+			projects[selectedIndex + 1] = temp;
+			selectedIndex++;
+			saveProjectsToLS();
+			generateProjectList();
+		}
+	}
+	// TODO Save to and load from string
+	selectListElem(selectedIndex);
+}
+
+function selectListElem(index) {
+	document.getElementsByClassName("selected")[0].classList.remove("selected");
+	elems.popup.list.children[index].classList.add("selected");
+}
+
+function saveProjectsToLS() {
+	if(!readyToSaveToLS) return;
+	let lsProjects = [];
+	for(let i = 0; i < projects.length; i++) {
+		lsProjects.push(projects[i].toString());
+	}
+	localStorage.setItem("Icebox.projects", JSON.stringify(lsProjects));
+	localStorage.setItem("Icebox.projectIndex", JSON.stringify(projectIndex));
+}
+
+loadProjectsFromLS();
+generateProjectList();
