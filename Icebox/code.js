@@ -476,7 +476,7 @@ function compile(project) {
 }
 
 function loadProject(newProject) {
-	if(typeof project !== undefined) project.removeElems();
+	if(typeof project !== "undefined") project.removeElems();
 	project = newProject;
 	project.appendElems();
 	switchToFile(project.files.html);
