@@ -555,6 +555,14 @@ function projectElemClicked(projectElem, index) {
 	selectedIndex = index;
 }
 
+function spaceTabEncode(str) {
+	return str.replace(/\$/g, "$$$$").replace(/ /g, "$$s").replace(/\t/g, "$$t");
+}
+
+function spaceTabDecode(str) {
+	return str.replace(/\$t/g, "\t").replace(/\$s/g, " ").replace(/\$\$/g, "$$");
+}
+
 function popupButton(cmd) {
 	let selected = document.getElementsByClassName("selected")[0];
 	let selectedProject = projects[selectedIndex];
@@ -618,16 +626,28 @@ function popupButton(cmd) {
 		}
 	}
 	else if(cmd === "upload") {
-		let newProjectStr = prompt("Please enter the project code:");
+		let newProjectStr = spaceTabDecode(prompt("Please enter the project code:"));
 		let [newProject, corrupted] = Project.fromString(newProjectStr);
-		if(corrupted) alert("Warning: The project hash didn't match! The project may have been corrupted.");
+		if(corrupted) {
+			window.foo = (newProjectStr);
+			alert("Warning: The project hash didn't match! The project may have been corrupted.");
+		}
 		projects.push(newProject);
 		saveProjectsToLS();
 		generateProjectList();
 		selectedIndex = projects.length - 1;
+		switchToProject(selectedIndex);
 	}
 	else if(cmd === "save") {
-		prompt("Save this project code somewhere safe!", selectedProject.toString());
+		let saveStr = spaceTabEncode(selectedProject.toString());
+		let temp = document.createElement("textarea");
+		temp.appendChild(document.createTextNode(saveStr));
+		document.body.appendChild(temp);
+		temp.focus();
+		temp.select();
+		document.execCommand("copy");
+		temp.remove();
+		alert("Project code copied to clipboard!")
 	}
 	// TODO Save to and load from string
 	selectListElem(selectedIndex);
