@@ -364,9 +364,11 @@ function Project() {
 Project.fromString = function(str) {	
 	let projectStr = str.substr(14, str.length - 85);
 	let hash = str.substr(str.length - 64, 64);
+	let corrupted = false;
 	
 	// Check the hash to ensure there was no corruption
 	if(sha256("Icebox Project" + projectStr) !== hash) {
+		corrupted = true;
 		console.warn("Warning! Project hash didn't match... the project may have been corrupted!");
 	}
 	
@@ -410,7 +412,7 @@ Project.fromString = function(str) {
 		newProject.files.lib[i].setText(data.data);
 	}
 	
-	return newProject;
+	return [newProject, corrupted];
 }
 
 // Switches the file in the editor
@@ -523,7 +525,7 @@ function loadProjectsFromLS() {
 	
 	// If there are no previously saved projects
 	if(lsProjects === null) {
-		project = Project.fromString(defaultProjectStr);
+		project = Project.fromString(defaultProjectStr)[0];
 		projects = [project];
 		projectIndex = 0;
 	}
@@ -532,7 +534,7 @@ function loadProjectsFromLS() {
 		// Load them into the projects var
 		projects = JSON.parse(lsProjects);
 		for(let i = 0; i < projects.length; i++) {
-			projects[i] = Project.fromString(projects[i]);
+			projects[i] = Project.fromString(projects[i])[0];
 		}
 		
 		// Set our project variables
@@ -541,11 +543,6 @@ function loadProjectsFromLS() {
 	}
 	switchToProject(projectIndex);
 	readyToSaveToLS = true;
-}
-
-function addProject() {
-	projects.push(Project.fromString(defaultProjectStr));
-	generateProjectList();
 }
 
 function projectElemClicked(projectElem, index) {
@@ -563,10 +560,12 @@ function popupButton(cmd) {
 	let selectedProject = projects[selectedIndex];
 	
 	if(cmd === "add") {
-		addProject();
+		projects.push(Project.fromString(defaultProjectStr)[0]);
+		saveProjectsToLS();
+		generateProjectList();
 		selectedIndex = projects.length - 1;
 	}
-	if(cmd === "edit") {
+	else if(cmd === "edit") {
 		switchToProject(selectedIndex);
 		hidePopup();
 	}
@@ -617,6 +616,18 @@ function popupButton(cmd) {
 			saveProjectsToLS();
 			generateProjectList();
 		}
+	}
+	else if(cmd === "upload") {
+		let newProjectStr = prompt("Please enter the project code:");
+		let [newProject, corrupted] = Project.fromString(newProjectStr);
+		if(corrupted) alert("Warning: The project hash didn't match! The project may have been corrupted.");
+		projects.push(newProject);
+		saveProjectsToLS();
+		generateProjectList();
+		selectedIndex = projects.length - 1;
+	}
+	else if(cmd === "save") {
+		prompt("Save this project code somewhere safe!", selectedProject.toString());
 	}
 	// TODO Save to and load from string
 	selectListElem(selectedIndex);
