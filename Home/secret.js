@@ -99,7 +99,7 @@ var secret = (function() {
 		// "trig"
 		"64053ca7ee3fcd9c4a32202ea1d04ef3cec0fdf183e5cfca9c09291ba17d3f20": function() {
 			let link = document.createElement("a");
-			link.href = `javascript:((t,c)=>t[c]=[]+t[c]!=!0+[])($(".datadisplaytable"),"contentEditable");`;
+			link.href = `javascript:((t,c)=>t[c]=[]+t[c]!=!0+[])(document.querySelector(".datadisplaytable"),"contentEditable");`;
 			link.innerText = "FMod by Isaac Chen";
 			document.body.appendChild(link);
         }
