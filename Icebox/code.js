@@ -1,13 +1,10 @@
 /*
  * TODO:
- *     Current project starts selected when opening "Manage projects" screen
  *     Double click action on projects on manage projects screen
- *     "Incorrect file name" when deleting
- *     
+ *     Clipboard api to auto-upload if clipboard is a project string
  */
 
 let aceEditor = ace.edit("editor");
-aceEditor.setTheme("ace/theme/monokai");
 aceEditor.setTheme("ace/theme/monokai"); // Automatically loaded, just pass a string
 aceEditor.setFontSize(16);
 // aceEditor.resize(); // Updates the ace size
@@ -520,7 +517,7 @@ function generateProjectList() {
 			projectElemClicked(this, i);
 		}
 		pElem.classList.add("popupListElem");
-		if(i === 0) pElem.classList.add("selected"); // TODO select the one we are currently editing
+		if(i === projectIndex) pElem.classList.add("selected");
 		elems.popup.list.appendChild(pElem);
 	}
 }
