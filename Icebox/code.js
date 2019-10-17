@@ -1,3 +1,11 @@
+/*
+ * TODO:
+ *     Current project starts selected when opening "Manage projects" screen
+ *     Double click action on projects on manage projects screen
+ *     "Incorrect file name" when deleting
+ *     
+ */
+
 let aceEditor = ace.edit("editor");
 aceEditor.setTheme("ace/theme/monokai");
 aceEditor.setTheme("ace/theme/monokai"); // Automatically loaded, just pass a string
@@ -179,8 +187,7 @@ function Project() {
 		})[this.type];
 		
 		// Initialize session
-		this.session = new ace.EditSession("");
-		this.session.setMode("ace/mode/" + this.aceType);
+		this.session = new ace.createEditSession("", "ace/mode/" + this.aceType);
 		this.session.on("change", function() {
 			compile(project);
 			saveProjectsToLS();
@@ -598,11 +605,24 @@ function popupButton(cmd) {
 	}
 	else if(cmd === "delete") {
 		let confirmString = `Do you really want to PERMANENTLY DELETE the project "${selectedProject.name}"? There's no going back!\n\nPlease type the project name to confirm.`;
-		if(prompt(confirmString) === selectedProject.name) {
+		let confirmResponse = prompt(confirmString);
+		
+		// Cancelled
+		if(confirmResponse === null) {
+			alert("The project was not deleted.");
+		}
+		// Correct project name
+		else if(confirmResponse === selectedProject.name) {
 			projects.splice(selectedIndex, 1);
 			selectedIndex--;
 			saveProjectsToLS();
 			generateProjectList();
+			
+			alert("Project deleted successfully");
+		}
+		// Incorrect project name
+		else {
+			alert(`Incorrect project name. The project has not been deleted. If you intended to delete the project, please try again and type the exact project name:\n\n${selectedProject.name}`);
 		}
 	}
 	else if(cmd === "up") {
