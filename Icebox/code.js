@@ -1,14 +1,12 @@
 /*
  * TODO:
- *     Double click action on projects on manage projects screen
- *     Infinite loop protection
  *     Possibly uploadable media (images, audio, etc);
  */
 
 let aceEditor = ace.edit("editor");
 aceEditor.setTheme("ace/theme/monokai"); // Automatically loaded, just pass a string
 aceEditor.setFontSize(16);
-// aceEditor.resize(); // Updates the ace size
+aceEditor.session.setUseSoftTabs(false);
 aceEditor.session.setMode("ace/mode/javascript");
 // Ctrl+r run shortcut
 aceEditor.commands.addCommand({
@@ -70,7 +68,7 @@ let firstCompile = true;
 let project;
 let projectIndex;
 let projects;
-let defaultProjectStr = "Icebox Project{\"name\":\"New project\",\"lastModified\":1567381492691,\"files\":{\"html\":\"{\\\"name\\\":\\\"index\\\",\\\"lastModified\\\":1567381492691,\\\"data\\\":\\\"<body>\\\\r\\\\n\\\\t<h1>This is my webpage.</h1>\\\\r\\\\n</body>\\\"}\",\"css\":[\"{\\\"name\\\":\\\"style\\\",\\\"lastModified\\\":1567381492694,\\\"data\\\":\\\"body {\\\\r\\\\n\\\\tbackground-color: gray;\\\\r\\\\n\\\\tfont-family: \\\\\\\"Arial\\\\\\\";\\\\r\\\\n}\\\"}\"],\"js\":[\"{\\\"name\\\":\\\"code\\\",\\\"lastModified\\\":1567381492695,\\\"data\\\":\\\"function init() {\\\\n    // Init\\\\n}\\\\nif(typeof ice !== \\\\\\\"undefined\\\\\\\" && ice.meta.framework.initialized) init();\\\\n\\\\nfunction tick() {\\\\n    // Tick\\\\n}\\\\n\\\\nfunction render() {\\\\n    // Render\\\\n}\\\"}\"],\"lib\":[\"{\\\"name\\\":\\\"ice\\\",\\\"lastModified\\\":1567381492696,\\\"data\\\":\\\"https://rebrand.ly/ice\\\"}\",\"{\\\"name\\\":\\\"ice.framework\\\",\\\"lastModified\\\":1567382816000,\\\"data\\\":\\\"https://rebrand.ly/ice-fw\\\"}\"]}}sha256:07b9b9b6f702fc6b358c191b3a8f5ad299eea3a27257f0c0a2cd1c23eee88c9a";
+let defaultProjectStr = "Icebox$sProject{\"name\":\"New$sproject\",\"lastModified\":1567381492691,\"files\":{\"html\":\"{\\\"name\\\":\\\"index\\\",\\\"lastModified\\\":1567381492691,\\\"data\\\":\\\"<body>\\\\r\\\\n\\\\t<h1>This$sis$smy$swebpage.<\/h1>\\\\r\\\\n<\/body>\\\"}\",\"css\":[\"{\\\"name\\\":\\\"style\\\",\\\"lastModified\\\":1567381492694,\\\"data\\\":\\\"body$s{\\\\r\\\\n\\\\tbackground-color:$sgray;\\\\r\\\\n\\\\tfont-family:$s\\\\\\\"Arial\\\\\\\";\\\\r\\\\n}\\\"}\"],\"js\":[\"{\\\"name\\\":\\\"code\\\",\\\"lastModified\\\":1567381492695,\\\"data\\\":\\\"function$sinit()$s{\\\\n$s$s$s$s\/\/$sInit\\\\n}\\\\nif(typeof$sice$s!==$s\\\\\\\"undefined\\\\\\\"$s&&$sice.meta.framework.initialized)$sinit();\\\\n\\\\nfunction$stick(dt)$s{\\\\n$s$s$s$s\/\/$sTick\\\\n}\\\\n\\\\nfunction$srender()$s{\\\\n$s$s$s$s\/\/$sRender\\\\n}\\\"}\"],\"lib\":[\"{\\\"name\\\":\\\"ice\\\",\\\"lastModified\\\":1567381492696,\\\"data\\\":\\\"https:\/\/rebrand.ly\/ice\\\"}\",\"{\\\"name\\\":\\\"ice.framework\\\",\\\"lastModified\\\":1567382816000,\\\"data\\\":\\\"https:\/\/rebrand.ly\/ice-fw\\\"}\"]}}sha256:5f69ac8c12d8d6f86298264d5cd16c69e56a8091f71af2e722cf844ea4ec4352";
 
 // sha256
 function sha256(ascii, binary = false) {
@@ -304,7 +302,6 @@ function Project() {
 	}
 	
 	// Combines the HTML, css, and js into one html string
-	// TODO Allow retrieving libraries from the web (ex: https://caasinehc.github.io/ice/src/ice.js)
 	this.toCombinedHTML = function() {
 		function indent(text) {
 			return "\t" + text.split("\n").join("\n\t");
@@ -444,6 +441,7 @@ Project.fromString = function(str) {
 // Expects a file from a project object (I'm Dr. Seuss apparently)
 function switchToFile(file) {
 	aceEditor.setSession(file.session);
+	aceEditor.session.setUseSoftTabs(false);
 	aceEditor.session.setMode(`ace/mode/${file.aceType}`);
 }
 
@@ -520,12 +518,14 @@ function loadProject(newProject) {
 }
 
 function switchToProject(index) {
-	// TODO don't fail silently, give an error
 	if(index < projects.length) {
 		projectIndex = index;
 		wipeFrame();
 		loadProject(projects[projectIndex]);
 		saveProjectsToLS();
+	}
+	else {
+		console.warn("Attempted to switch to a project that doesn't exist!");
 	}
 }
 
@@ -635,10 +635,17 @@ function popupButton(cmd) {
 	let selectedProject = projects[selectedIndex];
 	
 	if(cmd === "add") {
-		projects.push(Project.fromString(defaultProjectStr)[0]);
+		// projects.push(Project.fromString(defaultProjectStr)[0]);
+		// saveProjectsToLS();
+		// generateProjectList();
+		// selectedIndex = projects.length - 1;
+		let newProjectStr = spaceTabDecode(defaultProjectStr);
+		let newProject = Project.fromString(newProjectStr)[0];
+		projects.push(newProject);
 		saveProjectsToLS();
 		generateProjectList();
 		selectedIndex = projects.length - 1;
+		switchToProject(selectedIndex);
 	}
 	else if(cmd === "edit") {
 		switchToProject(selectedIndex);
@@ -728,12 +735,12 @@ function popupButton(cmd) {
 		temp.remove();
 		alert("Project code copied to clipboard!")
 	}
-	// TODO Save to and load from string
 	selectListElem(selectedIndex);
 }
 
 function selectListElem(index) {
-	document.getElementsByClassName("selected")[0].classList.remove("selected");
+	let selected = document.getElementsByClassName("selected")[0];
+	if(selected !== undefined) selected.classList.remove("selected");
 	elems.popup.list.children[index].classList.add("selected");
 }
 
