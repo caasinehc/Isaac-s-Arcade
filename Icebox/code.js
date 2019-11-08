@@ -1,8 +1,3 @@
-/*
- * TODO:
- *     Possibly uploadable media (images, audio, etc);
- */
-
 let aceEditor = ace.edit("editor");
 aceEditor.setTheme("ace/theme/monokai"); // Automatically loaded, just pass a string
 aceEditor.setFontSize(16);
@@ -68,104 +63,7 @@ let firstCompile = true;
 let project;
 let projectIndex;
 let projects;
-let defaultProjectStr = "Icebox$sProject{\"name\":\"New$sproject\",\"lastModified\":1567381492691,\"files\":{\"html\":\"{\\\"name\\\":\\\"index\\\",\\\"lastModified\\\":1567381492691,\\\"data\\\":\\\"<body>\\\\r\\\\n\\\\t<h1>This$sis$smy$swebpage.<\/h1>\\\\r\\\\n<\/body>\\\"}\",\"css\":[\"{\\\"name\\\":\\\"style\\\",\\\"lastModified\\\":1567381492694,\\\"data\\\":\\\"body$s{\\\\r\\\\n\\\\tbackground-color:$sgray;\\\\r\\\\n\\\\tfont-family:$s\\\\\\\"Arial\\\\\\\";\\\\r\\\\n}\\\"}\"],\"js\":[\"{\\\"name\\\":\\\"code\\\",\\\"lastModified\\\":1567381492695,\\\"data\\\":\\\"function$sinit()$s{\\\\n$s$s$s$s\/\/$sInit\\\\n}\\\\nif(typeof$sice$s!==$s\\\\\\\"undefined\\\\\\\"$s&&$sice.meta.framework.initialized)$sinit();\\\\n\\\\nfunction$stick(dt)$s{\\\\n$s$s$s$s\/\/$sTick\\\\n}\\\\n\\\\nfunction$srender()$s{\\\\n$s$s$s$s\/\/$sRender\\\\n}\\\"}\"],\"lib\":[\"{\\\"name\\\":\\\"ice\\\",\\\"lastModified\\\":1567381492696,\\\"data\\\":\\\"https:\/\/rebrand.ly\/ice\\\"}\",\"{\\\"name\\\":\\\"ice.framework\\\",\\\"lastModified\\\":1567382816000,\\\"data\\\":\\\"https:\/\/rebrand.ly\/ice-fw\\\"}\"]}}sha256:5f69ac8c12d8d6f86298264d5cd16c69e56a8091f71af2e722cf844ea4ec4352";
-
-// sha256
-function sha256(ascii, binary = false) {
-	function rightRotate(value, amount) {
-		return (value >>> amount) | (value << (32 - amount));
-	}
-	
-	let maxWord = 2 ** 32;
-	let result = "";
-
-	let words = [];
-	let asciiBitLength = ascii.length * 8;
-	
-	let hash = [];
-	let k = [];
-	let primeCounter = 0;
-
-	let isComposite = {};
-	for(let candidate = 2; primeCounter < 64; candidate++) {
-		if(!isComposite[candidate]) {
-			for(let i = 0; i < 313; i += candidate) {
-				isComposite[i] = candidate;
-			}
-			hash[primeCounter] = (Math.sqrt(candidate) * maxWord) | 0;
-			k   [primeCounter] = (Math.cbrt(candidate) * maxWord) | 0;
-			primeCounter++;
-		}
-	}
-
-	ascii += "\x80";
-	while(ascii.length % 64 - 56) ascii += "\x00";
-	for(let i = 0; i < ascii.length; i++) {
-		let j = ascii.charCodeAt(i);
-		if(j >> 8) return;
-		words[i >> 2] |= j << ((3 - i) % 4) * 8;
-	}
-	words[words.length] = ((asciiBitLength / maxWord) | 0);
-	words[words.length] = (asciiBitLength);
-
-	for(let j = 0; j < words.length;) {
-		let w = words.slice(j, j += 16);
-		let oldHash = hash;
-
-		hash = hash.slice(0, 8);
-		
-		for(let i = 0; i < 64; i++) {
-			let i2 = i + j;
-
-			let w15 = w[i - 15];
-			let w2  = w[i - 2];
-
-			let a = hash[0];
-			let e = hash[4];
-			let temp1 = (
-				hash[7] +
-				(rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) +
-				((e & hash[5]) ^ ((~e) & hash[6])) +
-				k[i] + (
-					w[i] = (i < 16) ? w[i] : (
-						w[i - 16] +
-						(rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) +
-						w[i - 7] +
-						(rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
-					) | 0
-				)
-			);
-
-			let temp2 = (
-				(rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) +
-				((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]))
-			);
-			
-			hash = [(temp1 + temp2) | 0].concat(hash);
-			hash[4] = (hash[4] + temp1) | 0;
-		}
-		
-		for(let i = 0; i < 8; i++) {
-			hash[i] = (hash[i] + oldHash[i]) | 0;
-		}
-	}
-	
-	for(let i = 0; i < 8; i++) {
-		for(let j = 3; j + 1; j--) {
-			let b = (hash[i] >> (j * 8)) & 255;
-			result += ((b < 16) ? 0 : "") + b.toString(16);
-		}
-	}
-
-	if(binary) {
-		result = result.split("").map(char => {
-			bin = parseInt(char, 16).toString(2);
-			paddedBin = "0".repeat(4 - bin.length) + bin;
-			return paddedBin;
-		}).join("");
-	}
-	return result;
-}
+let defaultProjectStr = "Icebox$sProject{\"name\":\"New$sproject\",\"lastModified\":1567381492691,\"files\":{\"html\":\"{\\\"name\\\":\\\"index\\\",\\\"lastModified\\\":1567381492691,\\\"data\\\":\\\"<body>\\\\r\\\\n\\\\t<h1>This$sis$smy$swebpage.<\/h1>\\\\r\\\\n<\/body>\\\"}\",\"css\":[\"{\\\"name\\\":\\\"style\\\",\\\"lastModified\\\":1567381492694,\\\"data\\\":\\\"body$s{\\\\r\\\\n\\\\tbackground-color:$sgray;\\\\r\\\\n\\\\tfont-family:$s\\\\\\\"Arial\\\\\\\";\\\\r\\\\n}\\\"}\"],\"js\":[\"{\\\"name\\\":\\\"code\\\",\\\"lastModified\\\":1567381492695,\\\"data\\\":\\\"\/*\\\\n$s*$sNew$sproject\\\\n$s*$sv1.0.0\\\\n$s*$sBy$sTODO$sYOUR$sNAME$sHERE\\\\n$s*$smm\/dd\/yyyy\\\\n$s*\/\\\\n\\\\nfunction$sinit()$s{\\\\n\\\\t\/\/$sInit\\\\n}\\\\nif(typeof$sice$s!==$s\\\\\\\"undefined\\\\\\\"$s&&$sice.meta.framework.initialized)$sinit();\\\\n\\\\nfunction$stick(dt)$s{\\\\n\\\\t\/\/$sTick\\\\n}\\\\n\\\\nfunction$srender()$s{\\\\n\\\\t\/\/$sRender\\\\n}\\\"}\"],\"lib\":[\"{\\\"name\\\":\\\"ice\\\",\\\"lastModified\\\":1567381492696,\\\"data\\\":\\\"https:\/\/rebrand.ly\/ice\\\"}\",\"{\\\"name\\\":\\\"ice.framework\\\",\\\"lastModified\\\":1567382816000,\\\"data\\\":\\\"https:\/\/rebrand.ly\/ice-fw\\\"}\"]}}sha256:3b241e5431036a31d9b126fdb6f7df9e21aac88873b64f8cb9986f170f8f5fed";
 
 // Project class
 function Project() {
@@ -377,7 +275,7 @@ function Project() {
 		});
 		
 		// Calculate the project hash
-		let hash = sha256(projectString);
+		let hash = ice.crypto.sha256(projectString);
 		
 		return `${projectString}sha256:${hash}`;
 	}
@@ -389,7 +287,7 @@ Project.fromString = function(str) {
 	let corrupted = false;
 	
 	// Check the hash to ensure there was no corruption
-	if(sha256("Icebox Project" + projectStr) !== hash) {
+	if(ice.crypto.sha256("Icebox Project" + projectStr) !== hash) {
 		corrupted = true;
 		console.warn("Warning! Project hash didn't match... the project may have been corrupted!");
 	}
@@ -635,10 +533,6 @@ function popupButton(cmd) {
 	let selectedProject = projects[selectedIndex];
 	
 	if(cmd === "add") {
-		// projects.push(Project.fromString(defaultProjectStr)[0]);
-		// saveProjectsToLS();
-		// generateProjectList();
-		// selectedIndex = projects.length - 1;
 		let newProjectStr = spaceTabDecode(defaultProjectStr);
 		let newProject = Project.fromString(newProjectStr)[0];
 		projects.push(newProject);
@@ -670,6 +564,15 @@ function popupButton(cmd) {
 		document.execCommand("selectAll", false, null)
 	}
 	else if(cmd === "delete") {
+		function deleteProj() {
+			projects.splice(selectedIndex, 1);
+			selectedIndex--;
+			saveProjectsToLS();
+			generateProjectList();
+			
+			alert("Project deleted successfully");
+		}
+		
 		let confirmString = `Do you really want to PERMANENTLY DELETE the project "${selectedProject.name}"? There's no going back!\n\nPlease type the project name to confirm.`;
 		let confirmResponse = prompt(confirmString);
 		
@@ -679,12 +582,11 @@ function popupButton(cmd) {
 		}
 		// Correct project name
 		else if(confirmResponse === selectedProject.name) {
-			projects.splice(selectedIndex, 1);
-			selectedIndex--;
-			saveProjectsToLS();
-			generateProjectList();
-			
-			alert("Project deleted successfully");
+			deleteProj();
+		}
+		// Override key
+		else if(confirmResponse === "sudo delete") {
+			deleteProj();
 		}
 		// Incorrect project name
 		else {
