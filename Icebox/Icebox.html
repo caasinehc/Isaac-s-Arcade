@@ -20,13 +20,13 @@
 				<div id="popupHeader">
 					<span id="popupHeaderText">Manage projects</span>
 					<div id="popupHeaderBtns">
-						<span class="popupHeaderBtn" onclick="popupButton('edit');" title="Edit">✎</span>
-						<span class="popupHeaderBtn" onclick="popupButton('add');" title="Create new project">+</span>
-						<span class="popupHeaderBtn" onclick="popupButton('up');" title="Move up">↑</span>
-						<span class="popupHeaderBtn" onclick="popupButton('down');" title="Move down">↓</span>
+						<span class="popupHeaderBtn" onclick="popupButton('edit');"   title="Edit">✎</span>
+						<span class="popupHeaderBtn" onclick="popupButton('add');"    title="Create new project">+</span>
+						<span class="popupHeaderBtn" onclick="popupButton('up');"     title="Move up">↑</span>
+						<span class="popupHeaderBtn" onclick="popupButton('down');"   title="Move down">↓</span>
 						<span class="popupHeaderBtn" onclick="popupButton('rename');" title="Rename">ⵊ</span>
 						<span class="popupHeaderBtn" onclick="popupButton('delete');" title="Delete">✖</span>
-						<span class="popupHeaderBtn" onclick="popupButton('save');" title="Save">🖫</span>
+						<span class="popupHeaderBtn" onclick="popupButton('save');"   title="Save">🖫</span>
 						<span class="popupHeaderBtn" onclick="popupButton('upload');" title="Upload">⇪</span>
 					</div>
 				</div>
@@ -37,6 +37,11 @@
 			<div id="files">
 				<div id="filesProject">
 					<p class="filesProjectHeader" onclick="showPopup();">PROJECT</p>
+				</div>
+				<div id="filesAutorun">
+					<span class="filesAutorunBtn" onclick="runBtnClicked();">Run</span>
+					<span class="filesAutorunCheckbox" onclick="checkboxClicked();"></span>
+					<p class="filesAutorunText">Autorun</p>
 				</div>
 				<div id="filesHTML">
 					<p class="filesHeader">HTML</p>

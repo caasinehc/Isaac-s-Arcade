@@ -1,7 +1,8 @@
 /*
  * TODO:
  *     Double click action on projects on manage projects screen
- *     Clipboard api to auto-upload if clipboard is a project string
+ *     Infinite loop protection
+ *     Possibly uploadable media (images, audio, etc);
  */
 
 let aceEditor = ace.edit("editor");
@@ -9,6 +10,22 @@ aceEditor.setTheme("ace/theme/monokai"); // Automatically loaded, just pass a st
 aceEditor.setFontSize(16);
 // aceEditor.resize(); // Updates the ace size
 aceEditor.session.setMode("ace/mode/javascript");
+// Ctrl+r run shortcut
+aceEditor.commands.addCommand({
+	name: "compileCode",
+	bindKey: {win: "Ctrl-r", mac: "Command-r"},
+	exec: function(editor) {
+		compile(project);
+	}
+});
+// Ctrl+p project shortcut
+aceEditor.commands.addCommand({
+	name: "manageProjects",
+	bindKey: {win: "Ctrl-p", mac: "Command-p"},
+	exec: function(editor) {
+		showPopup();
+	}
+});
 
 // Elements on the page
 let elems = {};
@@ -23,6 +40,9 @@ elems.resizer           = document.getElementById("resizer");
 elems.frame             = document.getElementById("frame");
 elems.files             = {};
 elems.files.main        = document.getElementById("files");
+elems.files.autorun     = {};
+elems.files.autorun.div = document.getElementById("filesAutorun");
+elems.files.autorun.cb  = document.querySelector(".filesAutorunCheckbox");
 elems.files.html        = {};
 elems.files.html.div    = document.getElementById("filesHTML");
 elems.files.html.header = elems.files.html.div.children[0];
@@ -44,6 +64,7 @@ elems.files.lib.files   = [];
 let isRisizerDragging;
 let readyToSaveToLS = false;
 let selectedIndex = 0;
+let firstCompile = true;
 
 // Project
 let project;
@@ -186,7 +207,7 @@ function Project() {
 		// Initialize session
 		this.session = new ace.createEditSession("", "ace/mode/" + this.aceType);
 		this.session.on("change", function() {
-			compile(project);
+			if(isAutoRunCheckboxTicked()) compile(project);
 			saveProjectsToLS();
 		})
 		
@@ -459,6 +480,13 @@ document.addEventListener("mouseup", function(e) {
 	isResizerDragging = false;
 })
 
+// Escape listener
+document.addEventListener("keydown", function(e) {
+	if(e.key === "Escape" && popupOpen()) {
+		hidePopup();
+	}
+})
+
 // iframe code
 function setFrameCode(code) {
 	let frameWindow = elems.frame.contentWindow;
@@ -475,6 +503,10 @@ function setFrameCode(code) {
 	frameWindow.location.reload();
 }
 
+function wipeFrame() {
+	setFrameCode("Press \"Run\" or ctrl+r to run the project");
+}
+
 function compile(project) {
 	setFrameCode(project.toCombinedHTML());
 }
@@ -484,13 +516,14 @@ function loadProject(newProject) {
 	project = newProject;
 	project.appendElems();
 	switchToFile(project.files.html);
-	compile(project);
+	if(isAutoRunCheckboxTicked()) compile(project);
 }
 
 function switchToProject(index) {
 	// TODO don't fail silently, give an error
 	if(index < projects.length) {
 		projectIndex = index;
+		wipeFrame();
 		loadProject(projects[projectIndex]);
 		saveProjectsToLS();
 	}
@@ -504,6 +537,33 @@ function hidePopup() {
 	elems.popup.main.style.display = "none";
 }
 
+function popupOpen() {
+	return elems.popup.main.style.display === "block";
+}
+
+// Handles the autorun checkbox
+function checkboxClicked() {
+	let cb = elems.files.autorun.cb;
+	
+	if(isAutoRunCheckboxTicked()) {
+		cb.classList.remove("checked");
+	}
+	else {
+		cb.classList.add("checked");
+		compile(project);
+	}
+}
+
+// Returns whether or not the autorun checkbox is ticked
+function isAutoRunCheckboxTicked() {
+	return elems.files.autorun.cb.classList.contains("checked");
+}
+
+// Handles the run button
+function runBtnClicked() {
+	compile(project);
+}
+
 function generateProjectList() {
 	let children = elems.popup.list.children;
 	for(let i = children.length - 1; i >= 0; i--) {
@@ -515,6 +575,9 @@ function generateProjectList() {
 		pElem.appendChild(textNode);
 		pElem.onclick = function() {
 			projectElemClicked(this, i);
+		}
+		pElem.ondblclick = function() {
+			popupButton("edit");
 		}
 		pElem.classList.add("popupListElem");
 		if(i === projectIndex) pElem.classList.add("selected");
@@ -598,7 +661,6 @@ function popupButton(cmd) {
 		selected.contentEditable = true;
 		selected.focus();
 		document.execCommand("selectAll", false, null)
-		// TODO save selected element
 	}
 	else if(cmd === "delete") {
 		let confirmString = `Do you really want to PERMANENTLY DELETE the project "${selectedProject.name}"? There's no going back!\n\nPlease type the project name to confirm.`;

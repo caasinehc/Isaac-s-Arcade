@@ -90,6 +90,44 @@
 	color: #FFFFFF;
 }
 
+.filesAutorunBtn {
+	margin-left: 8px;
+	margin-right: 8px;
+	/* background-color: #FF0000; */
+	/* color: #000000; */
+}
+
+.filesAutorunText {
+	float: right;
+	margin: 0px;
+	margin-left: 8px;
+	margin-right: 8px;
+	display: inline-block;
+	color: #FFFFFF;
+}
+
+.filesAutorunCheckbox {
+	float: right;
+	margin-left: 8px;
+	margin-right: 8px;
+	width: 16px;
+	height: 16px;
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+.filesAutorunCheckbox:hover {
+	background-color: #C0C0C0;
+}
+
+.filesAutorunCheckbox.checked {
+	background-color: #2099FF;
+}
+
+.filesAutorunCheckbox.checked:hover {
+	background-color: #1873BF;
+}
+
 .filesHeader {
 	margin: 8px;
 	margin-top: 16px;
