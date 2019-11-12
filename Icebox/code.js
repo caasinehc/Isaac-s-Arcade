@@ -490,7 +490,7 @@ function loadProjectsFromLS() {
 	
 	// If there are no previously saved projects
 	if(lsProjects === null) {
-		project = Project.fromString(defaultProjectStr)[0];
+		project = Project.fromString(spaceTabDecode(defaultProjectStr))[0];
 		projects = [project];
 		projectIndex = 0;
 	}
