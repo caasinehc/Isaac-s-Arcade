@@ -124,7 +124,7 @@ function Project() {
 			this.elem.onblur = () => {
 				this.elem.classList.remove("filesFileEditing");
 				this.elem.contentEditable = false;
-				this.name = this.elem.innerText;
+				this.setName(this.elem.innerText);
 				saveProjectsToLS();
 			}
 			this.elem.onkeydown = (e) => {
