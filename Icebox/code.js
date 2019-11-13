@@ -152,10 +152,8 @@ function Project() {
 		}
 		
 		this.setName = function(name) {
-			if(name.length > 0) {
-				this.name = name;
-				this.elem.innerText = name;
-			}
+			if(name.length > 0) this.name = name;
+			this.elem.innerText = this.name;
 		}
 		
 		this.getName = function() {
