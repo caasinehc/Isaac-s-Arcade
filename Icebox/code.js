@@ -7,7 +7,7 @@ aceEditor.session.setMode("ace/mode/javascript");
 aceEditor.commands.addCommand({
 	name: "compileCode",
 	bindKey: {win: "Ctrl-r", mac: "Command-r"},
-	exec: function(editor) {
+	exec: function() {
 		compile(project);
 	}
 });
@@ -15,7 +15,7 @@ aceEditor.commands.addCommand({
 aceEditor.commands.addCommand({
 	name: "manageProjects",
 	bindKey: {win: "Ctrl-p", mac: "Command-p"},
-	exec: function(editor) {
+	exec: function() {
 		showPopup();
 	}
 });
@@ -70,11 +70,10 @@ function Project() {
 	function getUnusedName(prefix, list) {
 		for(let i = 1; i < Infinity; i++) {
 			let taken = false;
-			if(typeof list === "Array") {
+			if(list instanceof Array) {
 				for(let file of list) {
 					if(file.name === (prefix + " " + i)) {
 						taken = true;
-						continue;
 					}
 				}
 			}
@@ -84,9 +83,9 @@ function Project() {
 	
 	// File class (private to the Project class)
 	function File(name, type, project) {
-		function esc(str) {
-			return str.replace(/"/g, "\\u0022");
-		}
+		// function esc(str) {
+		// 	return str.replace(/"/g, "\\u0022");
+		// }
 		
 		this.name = name;
 		this.type = type;
@@ -105,7 +104,7 @@ function Project() {
 		this.session.on("change", function() {
 			if(isAutoRunCheckboxTicked()) compile(project);
 			saveProjectsToLS();
-		})
+		});
 		
 		this.generateElem = function() {
 			// Create the p elem representing this file
@@ -115,50 +114,50 @@ function Project() {
 			this.elem.classList.add("filesFile");
 			this.elem.onclick = () => {
 				switchToFile(this);
-			}
+			};
 			this.elem.ondblclick = () => {
 				this.elem.classList.add("filesFileEditing");
 				this.elem.contentEditable = true;
 				this.elem.focus();
-			}
+			};
 			this.elem.onblur = () => {
 				this.elem.classList.remove("filesFileEditing");
 				this.elem.contentEditable = false;
 				this.setName(this.elem.innerText);
 				saveProjectsToLS();
-			}
+			};
 			this.elem.onkeydown = (e) => {
 				if(e.key === "Enter") {
 					this.elem.blur();
 				}
 			}
-		}
+		};
 		this.generateElem();
 		
 		this.appendElem = function() {
 			elems.files[this.type].div.appendChild(this.elem);
-		}
+		};
 		
 		this.removeElem = function() {
 			this.elem.remove();
-		}
+		};
 		
 		this.setText = function(text) {
 			return this.session.setValue(text);
-		}
+		};
 		
 		this.getText = function() {
 			return this.session.getValue();
-		}
+		};
 		
 		this.setName = function(name) {
 			if(name.length > 0) this.name = name;
 			this.elem.innerText = this.name;
-		}
-		
+		};
+
 		this.getName = function() {
 			return this.name;
-		}
+		};
 		
 		this.toString = function() {
 			return JSON.stringify({
@@ -183,21 +182,21 @@ function Project() {
 		let newFile = new File(name, "css", this);
 		if(appendElem) newFile.appendElem();
 		this.files.css.push(newFile);
-	}
+	};
 	
 	this.addJS = function(appendElem) {
 		let name = getUnusedName("script ", this.files.js);
 		let newFile = new File(name, "js", this);
 		if(appendElem) newFile.appendElem();
 		this.files.js.push(newFile);
-	}
+	};
 	
 	this.addLIB = function(appendElem) {
 		let name = getUnusedName("library ", this.files.lib);
 		let newFile = new File(name, "lib", this);
 		if(appendElem) newFile.appendElem();
 		this.files.lib.push(newFile);
-	}
+	};
 	
 	// Combines the HTML, css, and js into one html string
 	this.toCombinedHTML = function() {
@@ -235,26 +234,26 @@ function Project() {
 		}
 		scripts = removeLastChar(scripts);
 		
-		let combinedHTML = "<DOCTYPE html>\n<html>\n";
+		let combinedHTML = "<DOCTYPE html>\n<html lang=\"en\">\n";
 		combinedHTML += indent(`${this.files.html.getText()}\n${styles}\n${libs}\n${scripts}`);
 		combinedHTML += "\n</html>";
 		
 		return combinedHTML;
-	}
+	};
 	
 	this.appendElems = function() {
 		this.files.html.appendElem();
 		for(let file of this.files.css) file.appendElem();
 		for(let file of this.files.js)  file.appendElem();
 		for(let file of this.files.lib) file.appendElem();
-	}
+	};
 	
 	this.removeElems = function() {
 		this.files.html.removeElem();
 		for(let file of this.files.css) file.removeElem();
 		for(let file of this.files.js)  file.removeElem();
 		for(let file of this.files.lib) file.removeElem();
-	}
+	};
 	
 	this.toString = function() {
 		// Create an object with the stringified files
@@ -333,7 +332,7 @@ Project.fromString = function(str) {
 	}
 	
 	return [newProject, corrupted];
-}
+};
 
 // Switches the file in the editor
 // Expects a file from a project object (I'm Dr. Seuss apparently)
@@ -366,22 +365,22 @@ document.addEventListener("mousemove", function(e) {
 		elems.editor.style.width = newWidth + "px";
 		elems.editor.style.flexGrow = 0;
 		
-		// stops it from doing that retarded shit with the highlighting
+		// stops it from doing that stupid shit with the highlighting
 		e.preventDefault();
 	}
 });
 
 // Stop dragging when mouse is released
-document.addEventListener("mouseup", function(e) {
+document.addEventListener("mouseup", function() {
 	isResizerDragging = false;
-})
+});
 
 // Escape listener
 document.addEventListener("keydown", function(e) {
 	if(e.key === "Escape" && popupOpen()) {
 		hidePopup();
 	}
-})
+});
 
 // iframe code
 function setFrameCode(code) {
@@ -395,7 +394,7 @@ function setFrameCode(code) {
 		frameDocument.open();
 		frameDocument.write(code);
 		frameDocument.close();
-	}
+	};
 	frameWindow.location.reload();
 }
 
@@ -473,10 +472,10 @@ function generateProjectList() {
 		pElem.appendChild(textNode);
 		pElem.onclick = function() {
 			projectElemClicked(this, i);
-		}
+		};
 		pElem.ondblclick = function() {
 			popupButton("edit");
-		}
+		};
 		pElem.classList.add("popupListElem");
 		if(i === projectIndex) pElem.classList.add("selected");
 		elems.popup.list.appendChild(pElem);
@@ -547,18 +546,16 @@ function popupButton(cmd) {
 	}
 	else if(cmd === "rename") {
 		selected.onblur = function() {
-			this.onblur = undefined;
-			this.onkeydown = undefined;
 			selectedProject.name = selected.innerText;
 			saveProjectsToLS();
 			generateProjectList();
 			selectListElem(selectedIndex);
-		}
+		};
 		selected.onkeydown = function(e) {
 			if(e.key === "Enter") {
 				this.onblur();
 			}
-		}
+		};
 		selected.contentEditable = true;
 		selected.focus();
 		document.execCommand("selectAll", false, null)
