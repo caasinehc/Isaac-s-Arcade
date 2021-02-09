@@ -234,7 +234,7 @@ function Project() {
 		}
 		scripts = removeLastChar(scripts);
 		
-		let combinedHTML = "<DOCTYPE html>\n<html lang=\"en\">\n";
+		let combinedHTML = "<!DOCTYPE html>\n<html lang=\"en\">\n";
 		combinedHTML += indent(`${this.files.html.getText()}\n${styles}\n${libs}\n${scripts}`);
 		combinedHTML += "\n</html>";
 		
